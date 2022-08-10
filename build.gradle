@@ -36,9 +36,3 @@ subprojects {
         }
     }
 }
-
-project(':webSocket') {
-    dependencies {
-        implementation project(':social-login')
-    }
-}

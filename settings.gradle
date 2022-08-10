@@ -1,4 +1,4 @@
 rootProject.name = 'barrierFree'
-include 'social-login'
+include 'bf-user'
 include 'webSocket'
 
