@@ -69,7 +69,6 @@ public class User implements UserDetails {
         this.intro = intro;
         this.startDate = startDate;
         this.modifiedDate = modifiedDate;
-
         this.roles = roles;
     }
 
