@@ -1,5 +1,6 @@
 package bf.multi.server.domain.user;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,6 @@ class UserRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
-//    @AfterAll
-//    public void cleanup(){
-//        userRepository.deleteAll();
-//    }
 
     @Test
     @DisplayName("유저 정보가 잘 저장되고 잘 불러와지는지 테스트~")
@@ -51,7 +48,12 @@ class UserRepositoryTest {
 
         List<User> userList = userRepository.findAll();
 
-        System.out.println(userList);
+        User user = userList.get(0);
+        Assertions.assertEquals(user.getEmail(), email);
+        Assertions.assertEquals(user.getIntro(), intro);
 
+        Assertions.assertEquals(userRepository
+                .findByEmail(email).orElseThrow()
+                .getName(), name);
     }
 }
