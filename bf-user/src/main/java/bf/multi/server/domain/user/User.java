@@ -1,25 +1,19 @@
 package bf.multi.server.domain.user;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "USER")
-public class User implements UserDetails {
+public class User {
 
     // UserDetails는 시큐리티가 관리하는 객체
     // ID, NAME, EMAIL, PHOTO_LINK, GENDER, PHONE, AGE, INTRO, START_DATE, MODIFIED_DATE
@@ -56,12 +50,11 @@ public class User implements UserDetails {
     private Timestamp modifiedDate;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
+    @Singular
     private List<String> roles = new ArrayList<>();
 
     @Builder
-    public User(Long id, String name, String email, String photoLink, String gender, String phone, Integer age, String intro, Timestamp startDate, Timestamp modifiedDate, List<String> roles) {
-        this.id = id;
+    public User(String name, String email, String photoLink, String gender, String phone, Integer age, String intro, Timestamp startDate, Timestamp modifiedDate, List<String> roles) {
         this.name = name;
         this.email = email;
         this.photoLink = photoLink;
@@ -71,41 +64,42 @@ public class User implements UserDetails {
         this.intro = intro;
         this.startDate = startDate;
         this.modifiedDate = modifiedDate;
+
         this.roles = roles;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-    }
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+//    }
 
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return name;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+//    @Override
+//    public String getPassword() {
+//        return null;
+//    }
+//
+//    @Override
+//    public String getUsername() {
+//        return name;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isAccountNonLocked() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isCredentialsNonExpired() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean isEnabled() {
+//        return true;
+//    }
 }
