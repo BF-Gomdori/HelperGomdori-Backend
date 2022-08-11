@@ -1,6 +1,7 @@
 package bf.multi.server.domain.helper;
 
 import bf.multi.server.domain.user.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,4 +33,12 @@ public class Helper {
 
     @Column(name = "HEARTS", nullable = false)
     private Integer hearts;
+
+    @Builder
+    public Helper(User user, Integer helpCount, Double averageRate, Integer hearts) {
+        this.user = user;
+        this.helpCount = helpCount;
+        this.averageRate = averageRate;
+        this.hearts = hearts;
+    }
 }
