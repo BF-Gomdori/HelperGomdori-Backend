@@ -5,6 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 bf-user/src/main/resources/application.yml
+bf-user/src/test/resources/application.yml
 
 ### STS ###
 .apt_generated
