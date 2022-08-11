@@ -36,9 +36,9 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-   public String createToken(String user_id, List<String> roles){
+   public String createToken(String email, List<String> roles){
         // claim: JWT payload 에 저장되는 정보단위, user_id = 소셜 계정의 고유 id
-        Claims claims = Jwts.claims().setSubject(user_id);
+        Claims claims = Jwts.claims().setSubject(email);
         claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
         return Jwts.builder()
