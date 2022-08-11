@@ -22,7 +22,7 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
 
-    private String secretKey = "test";
+    private String secretKey = "testtesttesttest";
 
     // 토큰 유효시간 1일
     private long tokenValidTime = 24 * 60 * 60 * 1000L;
