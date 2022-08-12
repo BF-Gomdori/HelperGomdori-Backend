@@ -1,6 +1,7 @@
 package bf.multi.server.domain.requests;
 
 import bf.multi.server.domain.helpee.Helpee;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,4 +33,12 @@ public class Requests {
 
     @Column(name = "REQUEST_TIME", columnDefinition = "TIMESTAMP")
     private Timestamp requestTime;
+
+    @Builder
+    public Requests(Helpee helpee, String message, String location, Timestamp requestTime) {
+        this.helpee = helpee;
+        this.message = message;
+        this.location = location;
+        this.requestTime = requestTime;
+    }
 }
