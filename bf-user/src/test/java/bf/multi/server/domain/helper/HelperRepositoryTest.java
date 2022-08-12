@@ -8,11 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @SpringBootTest
-@Transactional
+//@Transactional
 class HelperRepositoryTest {
 
     @Autowired
@@ -42,5 +41,8 @@ class HelperRepositoryTest {
 
         Assertions.assertEquals(helperList.get(0).getAverageRate(), averageRate);
         Assertions.assertEquals(helperList.get(0).getUser().getName(), user.getName());
+        Assertions.assertEquals(helperList.get(0).getId(), userRepository.
+                findByEmail("example@gmail.com").orElseThrow().
+                getHelper().getId());
     }
 }

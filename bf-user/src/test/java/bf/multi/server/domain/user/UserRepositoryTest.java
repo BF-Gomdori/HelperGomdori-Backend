@@ -22,7 +22,7 @@ class UserRepositoryTest {
     @DisplayName("유저 정보가 잘 저장되고 잘 불러와지는지 테스트~")
     public void 저장_불러오기() {
         String name = "김민근";
-        String email = "example@gmail.com";
+        String email = "example@gmail2.com";
         String photoLink = "www.example.com";
         String gender = "M";
         String phone = "01000000000";
@@ -48,12 +48,14 @@ class UserRepositoryTest {
 
         List<User> userList = userRepository.findAll();
 
-        User user = userList.get(0);
+        User user = userList.get(1);
         Assertions.assertEquals(user.getEmail(), email);
         Assertions.assertEquals(user.getIntro(), intro);
 
         Assertions.assertEquals(userRepository
                 .findByEmail(email).orElseThrow()
                 .getName(), name);
+
+
     }
 }
