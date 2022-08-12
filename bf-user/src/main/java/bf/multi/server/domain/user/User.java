@@ -1,6 +1,7 @@
 package bf.multi.server.domain.user;
 
 
+import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helper.Helper;
 import lombok.Builder;
 import lombok.Getter;
@@ -59,6 +60,9 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user")
     private Helper helper;
+
+    @OneToOne(mappedBy = "user")
+    private Helpee helpee;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Singular
