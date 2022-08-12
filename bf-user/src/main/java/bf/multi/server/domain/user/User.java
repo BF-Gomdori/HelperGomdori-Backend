@@ -1,7 +1,11 @@
 package bf.multi.server.domain.user;
 
 
-import lombok.*;
+import bf.multi.server.domain.helper.Helper;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +19,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "USER")
 public class User implements UserDetails {
@@ -53,6 +56,9 @@ public class User implements UserDetails {
 
     @Column(name = "MODIFIED_DATE", nullable = false, columnDefinition = "TIMESTAMP")
     private Timestamp modifiedDate;
+
+    @OneToOne(mappedBy = "user")
+    private Helper helper;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Singular
@@ -105,5 +111,23 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", photoLink='" + photoLink + '\'' +
+                ", gender='" + gender + '\'' +
+                ", phone='" + phone + '\'' +
+                ", age=" + age +
+                ", intro='" + intro + '\'' +
+                ", startDate=" + startDate +
+                ", modifiedDate=" + modifiedDate +
+                ", helper=" + helper.getId() +
+                ", roles=" + roles +
+                '}';
     }
 }

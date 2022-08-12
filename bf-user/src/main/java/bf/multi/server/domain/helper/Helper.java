@@ -4,11 +4,13 @@ import bf.multi.server.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "HELPER")
 public class Helper {
@@ -41,4 +43,6 @@ public class Helper {
         this.averageRate = averageRate;
         this.hearts = hearts;
     }
+
+
 }
