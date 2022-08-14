@@ -1,5 +1,6 @@
 package bf.multi.server.domain.helpee;
 
+import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -38,6 +41,10 @@ public class Helpee {
 
     @Column(name = "HEARTS", nullable = false)
     private Integer hearts;
+
+    @OneToMany(mappedBy = "helpee")
+    @ToString.Exclude
+    private List<Requests> requestsList = new ArrayList<>();
 
     @Builder
     public Helpee(User user, String type, Integer requestCount, Double averageRate, Integer hearts) {
