@@ -4,12 +4,14 @@ import bf.multi.server.domain.helpee.Helpee;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Getter
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "REQUESTS")
 public class Requests {
@@ -21,6 +23,7 @@ public class Requests {
     @Column(name = "ID")
     private Long id;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "HELPEE_ID", nullable = false, unique = true)
     private Helpee helpee;
@@ -33,6 +36,11 @@ public class Requests {
 
     @Column(name = "REQUEST_TIME", columnDefinition = "TIMESTAMP")
     private Timestamp requestTime;
+
+    /* 연관 관계 편의 메서드 */
+    public void changeHelpee() {
+        helpee.getRequestsList().add(this);
+    }
 
     @Builder
     public Requests(Helpee helpee, String message, String location, Timestamp requestTime) {
