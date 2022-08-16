@@ -53,7 +53,7 @@ class RequestsRepositoryTest {
                         .orElseThrow().getHelpee().getId())
                 .orElseThrow().getRequestsList().get(0)
                 .getLocation(), requestsRepository
-                .findAllByHelpee_Id(helpee.getId())
+                .findAllByHelpee_User_Email(helpee.getUser().getEmail())
                 .get(0).getLocation()
         );
 
