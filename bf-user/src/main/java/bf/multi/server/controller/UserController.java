@@ -1,49 +1,28 @@
 package bf.multi.server.controller;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
+import bf.multi.server.domain.dto.UserDto;
+import bf.multi.server.domain.user.User;
+import bf.multi.server.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-
+@RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping("/users")
 public class UserController {
 
-    @GetMapping("/test")
-    public ResponseEntity<String> register(@RequestHeader Map<String, Object> headers){
-        System.out.println(headers);
-        System.out.println(headers.get("authorization").toString().split("\\s+"));
-        String[] token = headers.get("authorization").toString().split("\\s+");
-        return getUserInfo(token[1]);
-    }
+    private final UserService userService;
 
-
-    public ResponseEntity<String> getUserInfo(String token) {
-        // HTTP Header 생성
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
-        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        // HTTP 요청 보내기
-        HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
-        RestTemplate rt = new RestTemplate();
-        ResponseEntity<String> response = rt.exchange(
-                "https://kapi.kakao.com/v2/user/me",
-                HttpMethod.POST,
-                kakaoUserInfoRequest,
-                String.class
-        );
-
-        String responseBody = response.getBody();
-        System.out.println(responseBody);
-        return response;
+    @GetMapping("/self")
+    public UserDto userSelfDetail() {
+        // TODO: SecurityContextHolder 에서 유저 정보 조회
+        // https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/test-method.html
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.loadUserByUsername(userDetails.getUsername());
+        return UserDto.from(user);
     }
 }
