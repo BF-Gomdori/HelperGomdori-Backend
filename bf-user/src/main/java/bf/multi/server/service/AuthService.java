@@ -4,8 +4,9 @@ import bf.multi.server.domain.dto.JwtTokenDto;
 import bf.multi.server.domain.dto.UserLoginDto;
 import bf.multi.server.domain.dto.UserSignUpDto;
 import bf.multi.server.domain.user.User;
+import bf.multi.server.domain.user.UserRole;
 import bf.multi.server.exception.UserAlreadyExistsException;
-import bf.multi.server.repository.UserRepository;
+import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.Optional;
 
 @Slf4j
@@ -63,8 +65,15 @@ public class AuthService {
 
             User newUser = User.builder()
                     .username(signUpDto.getUsername())
-                    .email(signUpDto.getEmail())
-                    .password(passwordEncoder.encode(signUpDto.getPassword()))
+                    .email(passwordEncoder.encode(signUpDto.getEmail()))
+                    .photoLink(signUpDto.getPhotoLink())
+                    .gender(signUpDto.getGender())
+                    .phone(signUpDto.getPhone())
+                    .age(signUpDto.getAge())
+                    .intro(signUpDto.getIntro())
+                    .startDate(new Timestamp(System.currentTimeMillis()))
+                    .modifiedDate(new Timestamp(System.currentTimeMillis()))
+                    .role(UserRole.ROLE_USER) // 일단은 무조건 USER 권한 주는 걸로
                     .build();
 
             return userRepository.save(newUser);

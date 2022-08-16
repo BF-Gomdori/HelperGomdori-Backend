@@ -1,7 +1,7 @@
 package bf.multi.server.security;
 
 import bf.multi.server.domain.user.User;
-import bf.multi.server.repository.UserRepository;
+import bf.multi.server.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(username)
-                .password(user.getPassword())
+                .password(user.getEmail())
                 .authorities(user.getRole())
                 .accountExpired(false)
                 .accountLocked(false)

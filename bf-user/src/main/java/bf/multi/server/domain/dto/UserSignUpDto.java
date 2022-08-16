@@ -10,8 +10,11 @@ import lombok.Getter;
 public class UserSignUpDto {
 
     private String username;
-
     private String email;
+    private String photoLink;
+    private String gender;
+    private String phone;
+    private Integer age;
+    private String intro;
 
-    private String password;
 }

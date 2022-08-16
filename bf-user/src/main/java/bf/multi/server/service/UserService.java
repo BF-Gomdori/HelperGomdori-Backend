@@ -1,7 +1,7 @@
 package bf.multi.server.service;
 
 import bf.multi.server.domain.user.User;
-import bf.multi.server.repository.UserRepository;
+import bf.multi.server.domain.user.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

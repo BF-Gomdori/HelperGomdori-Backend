@@ -3,30 +3,81 @@ package bf.multi.server.domain.user;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import bf.multi.server.domain.helpee.Helpee;
+import bf.multi.server.domain.helper.Helper;
+import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
+//@NoArgsConstructor
 @Entity
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "NAME", length = 45, nullable = false)
     private String username;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(name = "PHOTO_LINK", nullable = false, columnDefinition = "TEXT")
+    private String photoLink;
+
+    @Column(name = "GENDER", length = 1, nullable = false)
+    private String gender;
+
+    @Column(name = "PHONE", length = 45, nullable = false)
+    private String phone;
+
+    @Column(name = "AGE", nullable = false)
+    private Integer age;
+
+    @Column(name = "INTRO", nullable = false, columnDefinition = "TEXT")
+    private String intro;
+
+    @Column(name = "START_DATE", nullable = false, columnDefinition = "TIMESTAMP")
+    private Timestamp startDate;
+
+    @Column(name = "MODIFIED_DATE", nullable = false, columnDefinition = "TIMESTAMP")
+    private Timestamp modifiedDate;
 
     @Enumerated(EnumType.STRING)
-    private UserRole role = UserRole.ROLE_USER;
+    @Column(name = "ROLE", nullable = false)
+    private UserRole role;
+
+    @OneToOne(mappedBy = "user")
+    @ToString.Exclude
+    private Helper helper;
+
+    @OneToOne(mappedBy = "user")
+    @ToString.Exclude
+    private Helpee helpee;
+
+    @PrePersist
+    public void prePersist(){
+        this.role = this.role == null ? UserRole.ROLE_USER : this.role;
+    }
+
+    @Builder
+    public User(String name, String email, String photoLink, String gender, String phone, Integer age, String intro, Timestamp startDate, Timestamp modifiedDate) {
+        this.username = name;
+        this.email = email;
+        this.photoLink = photoLink;
+        this.gender = gender;
+        this.phone = phone;
+        this.age = age;
+        this.intro = intro;
+        this.startDate = startDate;
+        this.modifiedDate = modifiedDate;
+    }
 }

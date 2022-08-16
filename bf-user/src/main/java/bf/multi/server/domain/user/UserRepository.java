@@ -1,4 +1,4 @@
-package bf.multi.server.repository;
+package bf.multi.server.domain.user;
 
 import bf.multi.server.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
