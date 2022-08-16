@@ -25,7 +25,7 @@ public class Requests {
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "HELPEE_ID", nullable = false, unique = true)
+    @JoinColumn(name = "HELPEE_ID", nullable = false)
     private Helpee helpee;
 
     @Column(name = "MSG", columnDefinition = "TEXT")
