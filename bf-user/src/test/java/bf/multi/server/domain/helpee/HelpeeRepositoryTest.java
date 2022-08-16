@@ -48,4 +48,15 @@ class HelpeeRepositoryTest {
                 getHelpee().getId());
 
     }
+
+    @Test
+    @DisplayName("findByUser_Email() 메서드 작동 테스트임~")
+    public void 이메일로_찾기() {
+        Assertions.assertEquals(helpeeRepository
+                .findByUser_Email("example@gmail.com")
+                .orElseThrow().getUser().getId(), userRepository
+                .findByEmail("example@gmail.com")
+                .orElseThrow().getId()
+        );
+    }
 }
