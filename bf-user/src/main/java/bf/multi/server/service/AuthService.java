@@ -34,6 +34,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public JwtTokenDto loginUser(UserLoginDto loginDto) {
+        log.info("username: "+ loginDto.getUsername()+" || password: "+loginDto.getPassword());
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -65,7 +66,8 @@ public class AuthService {
 
             User newUser = User.builder()
                     .username(signUpDto.getUsername())
-                    .email(passwordEncoder.encode(signUpDto.getEmail()))
+                    .email(signUpDto.getEmail())
+                    .password(passwordEncoder.encode(signUpDto.getEmail()))
                     .photoLink(signUpDto.getPhotoLink())
                     .gender(signUpDto.getGender())
                     .phone(signUpDto.getPhone())
