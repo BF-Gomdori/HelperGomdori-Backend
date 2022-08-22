@@ -30,10 +30,13 @@ public class User {
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "PASSWORD", nullable = false, unique = true)
+    private String password;
+
     @Column(name = "PHOTO_LINK", nullable = false, columnDefinition = "TEXT")
     private String photoLink;
 
-    @Column(name = "GENDER", length = 1, nullable = false)
+    @Column(name = "GENDER", length = 10, nullable = false)
     private String gender;
 
     @Column(name = "PHONE", length = 45, nullable = false)
@@ -69,9 +72,13 @@ public class User {
     }
 
     @Builder
-    public User(String name, String email, String photoLink, String gender, String phone, Integer age, String intro, Timestamp startDate, Timestamp modifiedDate) {
+    public User(String name, String email, String password,
+                String photoLink, String gender, String phone,
+                Integer age, String intro, Timestamp startDate,
+                Timestamp modifiedDate, UserRole roleUser) {
         this.username = name;
         this.email = email;
+        this.password = password;
         this.photoLink = photoLink;
         this.gender = gender;
         this.phone = phone;
@@ -79,5 +86,26 @@ public class User {
         this.intro = intro;
         this.startDate = startDate;
         this.modifiedDate = modifiedDate;
+        this.role = roleUser;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", photoLink='" + photoLink + '\'' +
+                ", gender='" + gender + '\'' +
+                ", phone='" + phone + '\'' +
+                ", age=" + age +
+                ", intro='" + intro + '\'' +
+                ", startDate=" + startDate +
+                ", modifiedDate=" + modifiedDate +
+                ", role=" + role +
+                ", helper=" + helper +
+                ", helpee=" + helpee +
+                '}';
     }
 }
