@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * 이건 어디다가 쓰는지 모르겠네?
+ */
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -23,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(username)
-                .password(user.getEmail())
+                .password(user.getPassword())
                 .authorities(user.getRole())
                 .accountExpired(false)
                 .accountLocked(false)

@@ -29,6 +29,7 @@ public class JwtTokenProvider {
 
 
     public String generateToken(Authentication authentication) {
+        log.info("Authentication: "+String.valueOf(authentication));
         Claims claims = Jwts.claims().setSubject(authentication.getName());
 
         Date now = new Date();
