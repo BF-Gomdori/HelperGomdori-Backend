@@ -27,7 +27,8 @@ public class BfUserApplication {
 		userRepository.findByUsername("admin").orElseGet(() -> {
 			User user = User.builder()
 					.username("admin")
-					.email(passwordEncoder.encode("admin@social.com"))
+					.email("admin@social.com")
+					.password(passwordEncoder.encode("admin@social.com"))
 					.photoLink("사진")
 					.gender("남")
 					.phone("010-9134-7564")
