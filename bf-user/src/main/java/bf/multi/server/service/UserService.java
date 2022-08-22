@@ -21,6 +21,11 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
+    public User loadUserByEncodedEmail(String encodedEmail) throws UsernameNotFoundException {
+        return userRepository.findByPassword(encodedEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + encodedEmail));
+    }
+
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
