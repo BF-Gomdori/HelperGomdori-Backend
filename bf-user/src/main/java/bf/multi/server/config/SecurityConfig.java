@@ -1,58 +1,89 @@
 package bf.multi.server.config;
 
-import bf.multi.server.jwt.JwtAuthenticationFilter;
-import bf.multi.server.jwt.JwtTokenProvider;
+import bf.multi.server.security.JwtAccessDeniedHandler;
+import bf.multi.server.security.JwtAuthenticationEntrypoint;
+import bf.multi.server.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
-@ConditionalOnDefaultWebSecurity
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
-    private final JwtTokenProvider jwtTokenProvider;
 
-    /**
-     * auth 매니저 설정
-     * */
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationEntrypoint jwtAuthenticationEntrypoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    @Order(SecurityProperties.BASIC_AUTH_ORDER)
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        // 일반적인 루트가 아닌 다른 방식으로 요청시 거절, header에 id, pw가 아닌 token(jwt)을 달고 간다. 그래서 basic이 아닌 bearer를 사용한다.
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors()
+                .cors().configurationSource(request -> {
+                    var cors = new CorsConfiguration();
+                    cors.setAllowedOrigins(Arrays.asList("*"));
+                    cors.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+                    cors.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+                    cors.setAllowCredentials(true);
+                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                    source.registerCorsConfiguration("/**", cors);
+                    return cors;
+                });
+        http
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .csrf()
+                .disable()  // CORS, Session 인증, CSRF 미사용
+                .formLogin()
+                .disable()  // Form 로그인 미사용
+                .httpBasic()
+                .disable();  // HTTP basic auth(브라우저기반) 미사용
 
-                .csrf().disable()
-                .httpBasic().disable() // session 사용 x
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                .and()
+        http
                 .authorizeRequests()
-                .antMatchers("/test").authenticated() // /test에 속해있는 url은 인증 요구
-                .antMatchers("/user/**").hasRole("USER")
-                .antMatchers("/**").permitAll()
+                .antMatchers(
+                        "/",
+                        "/error",
+                        "/auth/**")
+                .permitAll()    // auth, Oauth, 기타 asset 은 인증없이 접근허용
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // CORS 허용
+                .anyRequest().authenticated();    // 그 외 요청은 인증필요
 
-                .and() // JwtAuthenticationFilter가 UsernamePasswordAuthenticationFilter보다 먼저 실행
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
-                        UsernamePasswordAuthenticationFilter.class);
+        // add JWT entrypoint & handler
+        http
+                .exceptionHandling()
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .authenticationEntryPoint(jwtAuthenticationEntrypoint);
+
+        // add JWT adapter configuration before UsernamePasswordAuthenticationFilter
+        http.apply(new JwtFilterAdapterConfig(jwtTokenProvider));
+
         return http.build();
     }
+
 }

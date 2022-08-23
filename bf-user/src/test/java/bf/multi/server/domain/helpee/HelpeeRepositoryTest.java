@@ -1,7 +1,7 @@
 package bf.multi.server.domain.helpee;
 
-import bf.multi.server.domain.user.User;
 import bf.multi.server.domain.user.UserRepository;
+import bf.multi.server.domain.user.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ class HelpeeRepositoryTest {
         List<Helpee> helpeeList = helpeeRepository.findAll();
 
         Assertions.assertEquals(helpeeList.get(0).getAverageRate(), averageRate);
-        Assertions.assertEquals(helpeeList.get(0).getUser().getName(), user.getName());
+        Assertions.assertEquals(helpeeList.get(0).getUser().getUsername(), user.getUsername());
         Assertions.assertEquals(helpeeList.get(0).getId(), userRepository.
                 findByEmail("example@gmail.com").orElseThrow().
                 getHelpee().getId());

@@ -40,7 +40,7 @@ class HelperRepositoryTest {
         List<Helper> helperList = helperRepository.findAll();
 
         Assertions.assertEquals(helperList.get(1).getAverageRate(), averageRate);
-        Assertions.assertEquals(helperList.get(1).getUser().getName(), user.getName());
+        Assertions.assertEquals(helperList.get(1).getUser().getUsername(), user.getUsername());
         Assertions.assertEquals(helperList.get(1).getId(), userRepository.
                 findByEmail("example@naver.com").orElseThrow().
                 getHelper().getId());

@@ -21,30 +21,30 @@ class UserRepositoryTest {
     @Test
     @DisplayName("유저 정보가 잘 저장되고 잘 불러와지는지 테스트~")
     public void 저장_불러오기() {
-        String name = "김민근";
-        String email = "example@gmail2.com";
-        String photoLink = "www.example.com";
-        String gender = "M";
-        String phone = "01000000000";
-        Integer age = 24;
-        String intro = "자기소개입니다.";
-        Timestamp startDate = new Timestamp(System.currentTimeMillis());
-        Timestamp modifiedDate = new Timestamp(System.currentTimeMillis());
-
-
-        userRepository.save(
-                User.builder()
-                        .name(name)
-                        .email(email)
-                        .photoLink(photoLink)
-                        .gender(gender)
-                        .phone(phone)
-                        .age(age)
-                        .intro(intro)
-                        .startDate(startDate)
-                        .modifiedDate(modifiedDate)
-                        .build()
-        );
+        String name = "admin";
+        String email = "admin@social.com";
+//        String photoLink = "www.example.com";
+//        String gender = "M";
+//        String phone = "01000000000";
+//        Integer age = 24;
+        String intro = "자기소개";
+//        Timestamp startDate = new Timestamp(System.currentTimeMillis());
+//        Timestamp modifiedDate = new Timestamp(System.currentTimeMillis());
+//
+//
+//        userRepository.save(
+//                User.builder()
+//                        .username(name)
+//                        .email(email)
+//                        .photoLink(photoLink)
+//                        .gender(gender)
+//                        .phone(phone)
+//                        .age(age)
+//                        .intro(intro)
+//                        .startDate(startDate)
+//                        .modifiedDate(modifiedDate)
+//                        .build()
+//        );
 
         List<User> userList = userRepository.findAll();
 
@@ -54,7 +54,7 @@ class UserRepositoryTest {
 
         Assertions.assertEquals(userRepository
                 .findByEmail(email).orElseThrow()
-                .getName(), name);
+                .getUsername(), name);
 
 
     }

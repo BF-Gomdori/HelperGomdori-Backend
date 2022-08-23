@@ -47,7 +47,7 @@ class RequestsRepositoryTest {
         requestsRepository.save(requests);
 
         Assertions.assertEquals(message, requests.getMessage());
-        Assertions.assertEquals(helpee.getUser().getName(), requests.getHelpee().getUser().getName());
+        Assertions.assertEquals(helpee.getUser().getUsername(), requests.getHelpee().getUser().getUsername());
         Assertions.assertEquals(helpeeRepository.findById(userRepository
                         .findByEmail("example@gmail.com")
                         .orElseThrow().getHelpee().getId())
