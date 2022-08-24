@@ -68,6 +68,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers(
                         "/",
+                        "/swagger-ui/**", // swagger 관련 정적 파일을 모두 불러와야하기 때문에 /** 필수
                         "/error",
                         "/auth/**")
                 .permitAll()    // auth, Oauth, 기타 asset 은 인증없이 접근허용
