@@ -1,7 +1,7 @@
 package bf.multi.server.service;
 
-import bf.multi.server.domain.dto.KakaoLoginDto;
-import bf.multi.server.domain.dto.KakaoUserInfoDto;
+import bf.multi.server.domain.dto.user.KakaoLoginDto;
+import bf.multi.server.domain.dto.user.KakaoUserInfoDto;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.domain.user.UserRole;
@@ -20,11 +20,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 

@@ -1,12 +1,12 @@
 package bf.multi.server.service;
 
-import bf.multi.server.domain.dto.JwtTokenDto;
-import bf.multi.server.domain.dto.UserLoginDto;
-import bf.multi.server.domain.dto.UserSignUpDto;
+import bf.multi.server.domain.dto.user.JwtTokenDto;
+import bf.multi.server.domain.dto.user.UserLoginDto;
+import bf.multi.server.domain.dto.user.UserSignUpDto;
 import bf.multi.server.domain.user.User;
+import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.domain.user.UserRole;
 import bf.multi.server.exception.UserAlreadyExistsException;
-import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

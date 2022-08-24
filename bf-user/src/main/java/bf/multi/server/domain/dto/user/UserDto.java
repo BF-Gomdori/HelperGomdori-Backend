@@ -1,4 +1,4 @@
-package bf.multi.server.domain.dto;
+package bf.multi.server.domain.dto.user;
 
 import bf.multi.server.domain.user.User;
 import lombok.AllArgsConstructor;
