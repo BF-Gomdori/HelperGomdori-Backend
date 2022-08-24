@@ -1,4 +1,4 @@
-package bf.multi.server.controller;
+package bf.multi.server.handler;
 
 import bf.multi.server.common.Message;
 import bf.multi.server.common.Utils;
