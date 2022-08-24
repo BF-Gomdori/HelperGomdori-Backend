@@ -82,7 +82,7 @@ public class KakaoUserService {
                 kakaoUserInfoRequest,
                 String.class
         );
-
+        log.info(String.valueOf(response));
         // responseBody 정보 꺼내기
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
