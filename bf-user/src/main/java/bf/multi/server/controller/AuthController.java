@@ -5,6 +5,7 @@ import bf.multi.server.domain.user.User;
 import bf.multi.server.service.AuthService;
 import bf.multi.server.service.KakaoUserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
+@Api
 public class AuthController {
     private final KakaoUserService kakaoUserService;
     private final AuthService authService;
@@ -47,10 +49,10 @@ public class AuthController {
         return UserDto.from(user);
     }
     @PostMapping("/barrierfree")
-    public void bfRegister(
+    public JwtTokenDto bfRegister(
             @RequestBody KakaoLoginDto kakaoLoginDto,
             HttpServletResponse response) throws JsonProcessingException {
-        User user = kakaoUserService.kakaoRegister(kakaoLoginDto, response);
-        return;
+        return kakaoUserService.kakaoRegister(kakaoLoginDto, response);
     }
+
 }
