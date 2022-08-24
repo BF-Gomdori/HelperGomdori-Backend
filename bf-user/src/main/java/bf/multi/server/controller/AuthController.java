@@ -43,9 +43,10 @@ public class AuthController {
         return UserDto.from(user);
     }
     @PostMapping("/barrierfree")
-    public User bfRegister(
+    public void bfRegister(
             @RequestBody KakaoLoginDto kakaoLoginDto,
             HttpServletResponse response) throws JsonProcessingException {
-        return kakaoUserService.kakaoRegister(kakaoLoginDto, response);
+        User user = kakaoUserService.kakaoRegister(kakaoLoginDto, response);
+        return;
     }
 }
