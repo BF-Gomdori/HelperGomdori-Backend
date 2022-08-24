@@ -1,5 +1,6 @@
 package bf.multi.server.domain.dto.user;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ public class KakaoUserInfoDto {
     private String gender;
     private String thumbnailImage;
 
+    @Builder
     public KakaoUserInfoDto(Long id, String email, String nickname, String gender, String thumbnailImage) {
         this.id = id;
         this.nickname = nickname;
