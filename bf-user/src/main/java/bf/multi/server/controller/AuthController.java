@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -46,9 +47,10 @@ public class AuthController {
         return UserDto.from(user);
     }
     @PostMapping("/barrierfree")
-    public User bfRegister(
+    public void bfRegister(
             @RequestBody KakaoLoginDto kakaoLoginDto,
             HttpServletResponse response) throws JsonProcessingException {
-        return kakaoUserService.kakaoRegister(kakaoLoginDto, response);
+        User user = kakaoUserService.kakaoRegister(kakaoLoginDto, response);
+        return;
     }
 }
