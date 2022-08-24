@@ -1,6 +1,7 @@
 package bf.multi.server.domain.requests;
 
 import bf.multi.server.domain.helpee.Helpee;
+import bf.multi.server.domain.helps.Helps;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -25,7 +28,7 @@ public class Requests {
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "HELPEE_ID", nullable = false, unique = true)
+    @JoinColumn(name = "HELPEE_ID", nullable = false)
     private Helpee helpee;
 
     @Column(name = "MSG", columnDefinition = "TEXT")
@@ -41,6 +44,10 @@ public class Requests {
     public void changeHelpee() {
         helpee.getRequestsList().add(this);
     }
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "requests")
+    private List<Helps> helpsList = new ArrayList<>();
 
     @Builder
     public Requests(Helpee helpee, String message, String location, Timestamp requestTime) {

@@ -16,6 +16,7 @@ public class JwtAuthenticationEntrypoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        log.error("권한이 없는 path : "+request.getRequestURL());
         log.error("Responding with unauthorized error. Message: {}", authException.getMessage());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                 authException.getLocalizedMessage());

@@ -1,6 +1,5 @@
 package bf.multi.server.controller;
 
-import bf.multi.server.domain.dto.UserDto;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.service.UserService;
 import lombok.RequiredArgsConstructor;

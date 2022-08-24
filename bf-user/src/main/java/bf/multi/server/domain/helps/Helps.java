@@ -2,6 +2,7 @@ package bf.multi.server.domain.helps;
 
 import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.domain.requests.Requests;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -54,4 +55,26 @@ public class Helps {
 
     @Column(name = "HELPEE_MSG", columnDefinition = "TEXT")
     private String helpeeMessage;
+
+    @Builder
+    public Helps(Helper helper, Requests requests, Timestamp acceptTime, Timestamp finishTime, String success, Double helperRate, Double helpeeRate, String helperMessage, String helpeeMessage) {
+        this.helper = helper;
+        this.requests = requests;
+        this.acceptTime = acceptTime;
+        this.finishTime = finishTime;
+        this.success = success;
+        this.helperRate = helperRate;
+        this.helpeeRate = helpeeRate;
+        this.helperMessage = helperMessage;
+        this.helpeeMessage = helpeeMessage;
+    }
+
+    /* 연관 관계 편의 메서드 */
+    public void changeHelper() {
+        helper.getHelpsList().add(this);
+    }
+
+    public void changeRequests() {
+        requests.getHelpsList().add(this);
+    }
 }
