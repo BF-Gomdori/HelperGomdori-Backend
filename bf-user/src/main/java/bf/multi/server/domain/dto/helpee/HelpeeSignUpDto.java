@@ -14,18 +14,9 @@ public class HelpeeSignUpDto {
 
     private String type;
 
-    private Integer requestCount;
-
-    private Double averageRate;
-
-    private Integer hearts;
-
     @Builder
     public HelpeeSignUpDto(String type, Integer requestCount, Double averageRate, Integer hearts) {
         this.type = type;
-        this.requestCount = requestCount;
-        this.averageRate = averageRate;
-        this.hearts = hearts;
     }
 
     /* User에 대한 Setter */
@@ -38,9 +29,6 @@ public class HelpeeSignUpDto {
                 .builder()
                 .user(user)
                 .type(type)
-                .requestCount(requestCount)
-                .averageRate(averageRate)
-                .hearts(hearts)
                 .build();
     }
 }
