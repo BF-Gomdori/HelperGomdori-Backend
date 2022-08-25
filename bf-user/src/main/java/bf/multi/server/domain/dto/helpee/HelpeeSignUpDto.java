@@ -15,7 +15,7 @@ public class HelpeeSignUpDto {
     private String type;
 
     @Builder
-    public HelpeeSignUpDto(String type, Integer requestCount, Double averageRate, Integer hearts) {
+    public HelpeeSignUpDto(String type) {
         this.type = type;
     }
 
