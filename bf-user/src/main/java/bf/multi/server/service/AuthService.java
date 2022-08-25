@@ -1,8 +1,12 @@
 package bf.multi.server.service;
 
+import bf.multi.server.domain.dto.helpee.HelpeeSignUpDto;
 import bf.multi.server.domain.dto.user.JwtTokenDto;
 import bf.multi.server.domain.dto.user.UserLoginDto;
 import bf.multi.server.domain.dto.user.UserSignUpDto;
+import bf.multi.server.domain.helpee.Helpee;
+import bf.multi.server.domain.helpee.HelpeeRepository;
+import bf.multi.server.domain.helper.HelperRepository;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.domain.user.UserRole;
@@ -29,12 +33,17 @@ import java.util.Optional;
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
+
     private final UserRepository userRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final HelpeeRepository helpeeRepository;
+
+    private final HelperRepository helperRepository;
+
     public JwtTokenDto loginUser(UserLoginDto loginDto) {
-        log.info("username: "+ loginDto.getUsername()+" || password: "+loginDto.getPassword());
+        log.info("username: " + loginDto.getUsername() + " || password: " + loginDto.getPassword());
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -80,5 +89,11 @@ public class AuthService {
 
             return userRepository.save(newUser);
         }
+    }
+
+    public Helpee connectHelpee(HelpeeSignUpDto helpeeSignUpDto) {
+        Helpee helpee = helpeeSignUpDto.toEntity();
+
+        return helpeeRepository.save(helpee);
     }
 }
