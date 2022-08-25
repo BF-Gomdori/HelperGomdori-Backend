@@ -29,6 +29,9 @@ public class HelpeeSignUpDto {
                 .builder()
                 .user(user)
                 .type(type)
+                .requestCount(0)
+                .averageRate(0.0)
+                .hearts(0)
                 .build();
     }
 }
