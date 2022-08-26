@@ -1,6 +1,9 @@
 package bf.multi.server.controller;
 
+import bf.multi.server.domain.dto.helpee.HelpeeResponseDto;
+import bf.multi.server.domain.dto.helpee.HelpeeSignUpDto;
 import bf.multi.server.domain.dto.user.*;
+import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.service.AuthService;
 import bf.multi.server.service.KakaoUserService;
@@ -9,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,10 +50,22 @@ public class AuthController {
         User user = authService.registerUser(signUpDto);
         return UserDto.from(user);
     }
+
     @PostMapping("/barrierfree")
     public User bfRegister(
             @RequestBody KakaoLoginDto kakaoLoginDto,
             HttpServletResponse response) throws JsonProcessingException {
         return kakaoUserService.kakaoRegister(kakaoLoginDto, response);
+    }
+
+    @PostMapping("/signup/helpee")
+    public HelpeeResponseDto helpeeSignup(
+            @RequestBody HelpeeSignUpDto helpeeSignUpDto) {
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        helpeeSignUpDto.setUser(authService.getUserByPassword(userDetails.getPassword()));
+        Helpee helpee = authService.connectHelpee(helpeeSignUpDto);
+
+        return HelpeeResponseDto.from(helpee);
     }
 }
