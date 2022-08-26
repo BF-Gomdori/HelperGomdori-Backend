@@ -14,10 +14,10 @@ import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 @Configuration
 @EnableWebSocketMessageBroker
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-//    private final StompHandler stompHandler; // jwt 토큰 인증 핸들러
+    private final StompHandler stompHandler; // jwt 토큰 인증 핸들러
     /**
      * Configure message broker options.
      *
@@ -50,8 +50,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
 
-//    @Override
-//    public void configureClientInboundChannel(ChannelRegistration registration) {
-//        registration.interceptors(stompHandler); // 핸들러 등록
-//    }
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(stompHandler); // 핸들러 등록
+    }
 }
