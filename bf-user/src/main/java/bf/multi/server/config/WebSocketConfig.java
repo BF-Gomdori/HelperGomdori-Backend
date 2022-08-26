@@ -1,14 +1,23 @@
 package bf.multi.server.config;
 
+import bf.multi.server.websocket.handler.StompHandler;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class StompWebSocketConfigurer implements WebSocketMessageBrokerConfigurer {
+//@RequiredArgsConstructor
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+//    private final StompHandler stompHandler; // jwt 토큰 인증 핸들러
     /**
      * Configure message broker options.
      *
@@ -35,8 +44,14 @@ public class StompWebSocketConfigurer implements WebSocketMessageBrokerConfigure
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
-                .addEndpoint("/gomdori")
-                .setAllowedOrigins("http://localhost:9001")
-                .withSockJS();
+                .addEndpoint("/dori")
+                .setAllowedOrigins("*");
+//                .withSockJS();
     }
+
+
+//    @Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        registration.interceptors(stompHandler); // 핸들러 등록
+//    }
 }
