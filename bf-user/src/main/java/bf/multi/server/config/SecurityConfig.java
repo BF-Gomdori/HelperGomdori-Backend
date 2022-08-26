@@ -5,20 +5,26 @@ import bf.multi.server.security.JwtAuthenticationEntrypoint;
 import bf.multi.server.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.firewall.DefaultHttpFirewall;
+import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+@Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
@@ -42,17 +48,27 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http
+//                .cors().configurationSource(request -> {
+//                    var cors = new CorsConfiguration();
+//                    cors.setAllowedOrigins(Arrays.asList(
+//                            "http://localhost:3000",
+//                            "https://kapi.kakao.com/v2/user/me",
+//                            "http://localhost:9000"));
+////                    cors.setAllowedOrigins(Arrays.asList("*"));
+//                    cors.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+//                    cors.setAllowedHeaders(Arrays.asList("*"));
+//                    cors.setAllowCredentials(true);
+//                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//                    source.registerCorsConfiguration("/**", cors);
+//                    return cors;
+//                });
         http
-                .cors().configurationSource(request -> {
-                    var cors = new CorsConfiguration();
-                    cors.setAllowedOrigins(Arrays.asList("*"));
-                    cors.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
-                    cors.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-                    cors.setAllowCredentials(true);
-                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                    source.registerCorsConfiguration("/**", cors);
-                    return cors;
-                });
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions
+                                .sameOrigin()
+                        )
+                );
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -66,13 +82,16 @@ public class SecurityConfig {
 
         http
                 .authorizeRequests()
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // CORS 허용
                 .antMatchers(
                         "/",
+                        "/dori/**", // websocket
+                        "/v2/api-docs",
+                        "/swagger-resources/**",
                         "/swagger-ui/**", // swagger 관련 정적 파일을 모두 불러와야하기 때문에 /** 필수
                         "/error",
                         "/auth/**")
                 .permitAll()    // auth, Oauth, 기타 asset 은 인증없이 접근허용
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // CORS 허용
                 .anyRequest().authenticated();    // 그 외 요청은 인증필요
 
         // add JWT entrypoint & handler
@@ -85,6 +104,16 @@ public class SecurityConfig {
         http.apply(new JwtFilterAdapterConfig(jwtTokenProvider));
 
         return http.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web -> web.httpFirewall(defaultHttpFirewall()));
+    }
+
+    @Bean
+    public HttpFirewall defaultHttpFirewall() {
+        return new DefaultHttpFirewall();
     }
 
 }

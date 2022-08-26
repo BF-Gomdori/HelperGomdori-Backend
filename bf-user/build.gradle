@@ -18,12 +18,16 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-reactor-netty'
+
     compileOnly 'org.projectlombok:lombok'
     testCompileOnly('org.projectlombok:lombok')
     annotationProcessor('org.projectlombok:lombok')
     testAnnotationProcessor('org.projectlombok:lombok')
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'mysql:mysql-connector-java'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'

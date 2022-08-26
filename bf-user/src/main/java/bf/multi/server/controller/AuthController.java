@@ -25,10 +25,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Objects;
 
+@Api
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
-@Api
 public class AuthController {
     private final KakaoUserService kakaoUserService;
     private final AuthService authService;
