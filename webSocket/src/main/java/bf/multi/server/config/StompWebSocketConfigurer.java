@@ -8,7 +8,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfigurer implements WebSocketMessageBrokerConfigurer {
+public class StompWebSocketConfigurer implements WebSocketMessageBrokerConfigurer {
     /**
      * Configure message broker options.
      *
@@ -16,16 +16,14 @@ public class WebSocketConfigurer implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-//        registry.enableSimpleBroker("/sub");
-//        registry.setApplicationDestinationPrefixes("/
+        /**
+         * /pub 경로로 시작하는 STOMP 메세지의 "destination" 헤더는 @Controller 객체의 @MessageMapping 메서드로 라우팅된다.
+         *  내장된 메세지 브로커를 사용해 Client에게 Subscriptions, Broadcasting 기능을 제공한다.
+         *  또한 /sub로 시작하는 "destination" 헤더를 가진 메세지를 브로커로 라우팅한다.
+         */
         registry
                 .setApplicationDestinationPrefixes("/pub")
-                .enableStompBrokerRelay("/topic")
-                .setRelayHost("localhost")
-                .setVirtualHost("/")
-                .setRelayPort(61613)
-                .setClientLogin("guest")
-                .setClientPasscode("guest");
+                .enableSimpleBroker("/sub");
     }
 
     /**
@@ -37,7 +35,8 @@ public class WebSocketConfigurer implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
-                .addEndpoint("/ws")
-                .setAllowedOrigins("*");
+                .addEndpoint("/gomdori")
+                .setAllowedOrigins("http://localhost:9001")
+                .withSockJS();
     }
 }
