@@ -1,11 +1,13 @@
 package bf.multi.server.service;
 
 import bf.multi.server.domain.dto.helpee.HelpeeSignUpDto;
+import bf.multi.server.domain.dto.helper.HelperSignUpDto;
 import bf.multi.server.domain.dto.user.JwtTokenDto;
 import bf.multi.server.domain.dto.user.UserLoginDto;
 import bf.multi.server.domain.dto.user.UserSignUpDto;
 import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helpee.HelpeeRepository;
+import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.domain.helper.HelperRepository;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.domain.user.UserRepository;
@@ -91,9 +93,22 @@ public class AuthService {
         }
     }
 
+    @Transactional
     public Helpee connectHelpee(HelpeeSignUpDto helpeeSignUpDto) {
         Helpee helpee = helpeeSignUpDto.toEntity();
 
         return helpeeRepository.save(helpee);
+    }
+
+    @Transactional
+    public Helper connectHelper(HelperSignUpDto helperSignUpDto) {
+        Helper helper = helperSignUpDto.toEntity();
+
+        return helperRepository.save(helper);
+    }
+
+    @Transactional
+    public User getUserByPassword(String password) {
+        return userRepository.findByPassword(password).orElseThrow();
     }
 }
