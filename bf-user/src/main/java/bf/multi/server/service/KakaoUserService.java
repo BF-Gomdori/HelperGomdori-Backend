@@ -1,5 +1,6 @@
 package bf.multi.server.service;
 
+import bf.multi.server.domain.dto.user.JwtTokenDto;
 import bf.multi.server.domain.dto.user.KakaoLoginDto;
 import bf.multi.server.domain.dto.user.KakaoUserInfoDto;
 import bf.multi.server.domain.user.User;
@@ -22,6 +23,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -47,7 +53,7 @@ public class KakaoUserService {
      * @return
      * @throws JsonProcessingException
      */
-    public User kakaoRegister(KakaoLoginDto kakaoLoginDto, HttpServletResponse response) throws JsonProcessingException{
+    public JwtTokenDto kakaoRegister(KakaoLoginDto kakaoLoginDto, HttpServletResponse response) throws JsonProcessingException{
         // 1. 토큰으로 카카오 API 호출
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(kakaoLoginDto.getAccessToken());
 
@@ -58,9 +64,8 @@ public class KakaoUserService {
         Authentication authentication = forceLogin(kakaoUser);
 
         // 4. response Header에 JWT 토큰 추가
-        issueToken(authentication, response);
+        return issueToken(authentication, response);
 
-        return kakaoUser;
     }
 
     // 1. 토큰으로 카카오 API 호출
@@ -79,7 +84,7 @@ public class KakaoUserService {
                 kakaoUserInfoRequest,
                 String.class
         );
-
+        log.info(String.valueOf(response));
         // responseBody 정보 꺼내기
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -141,9 +146,12 @@ public class KakaoUserService {
     }
 
     // 4. response Header에 JWT 토큰 추가
-    private void issueToken(Authentication authentication, HttpServletResponse response) {
+    private JwtTokenDto issueToken(Authentication authentication, HttpServletResponse response) {
         // response header에 token 추가
         String jwtToken = jwtTokenProvider.generateToken(authentication);
-        response.addHeader("Authorization","Bearer "+jwtToken);
+//        response.addHeader("Authorization","Bearer "+jwtToken);
+        return JwtTokenDto.builder()
+                .token(jwtToken)
+                .build();
     }
 }
