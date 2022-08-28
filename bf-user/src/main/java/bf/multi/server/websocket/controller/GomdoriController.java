@@ -1,31 +1,59 @@
 package bf.multi.server.websocket.controller;
 
+import bf.multi.server.domain.requests.Requests;
+import bf.multi.server.domain.user.User;
+import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.security.JwtTokenProvider;
+import bf.multi.server.websocket.domain.HelpMessage;
 import bf.multi.server.websocket.domain.MessageDto;
+import bf.multi.server.websocket.service.GomdoriService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
 public class GomdoriController {
+    private final UserRepository userRepository;
+    private final GomdoriService gomdoriService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final SimpMessageSendingOperations simpMessageSendingOperations;
 
-    @MessageMapping("/helper")
-    public void handle(MessageDto message){
-        String jwt = message.getSenderId();
-        String username = jwtTokenProvider.getUsernameByToken(jwt);
-        log.info("============= Websocket msg =============");
-        log.info("["+ new Timestamp(System.currentTimeMillis()) + "] username: "+username + " 님이 접속하셨습니다.");
-        message.setSenderId(username);
-        simpMessageSendingOperations.convertAndSend("/sub/ch/"+message.getReceiverId(),message);
+    // 자신의 위치 정보 표시한다고 눌렀을 때
+    @MessageMapping("/enter")
+    public void initEnter(MessageDto messageDto) {
+        String username = jwtTokenProvider.getUsernameByToken(messageDto.getJwt());
+        Optional<User> user = userRepository.findByUsername(username);
+        log.info("============= Websocket 현재 위치 전송 =============");
+        log.info("[" + new Timestamp(System.currentTimeMillis()) + "] username: "
+                + user.get().getUsername() + " 님이 접속하셨습니다.");
+        log.info("현재 위치 : [" + messageDto.getLocation().toString() + "]");
+        gomdoriService.sendMessage(messageDto);
+    }
+
+    // 베프의 핑을 눌렀을 때 보이는 정보
+
+    // 곰돌이가 도움 요청할 때 방 생성
+    @MessageMapping("/help") // 메인 맵에다가 자신의 위치 및 도움 필요 정보 뿌림
+    public void reqHelp(HelpMessage helpMessage){
+        log.info("========== 곰돌이 도움 요청 !!! ==========");
+        HelpMessage help = gomdoriService.createHelp(helpMessage);
+        log.info("[도움 요청 정보] : "+help);
+    }
+
+    @PostMapping("/gomdori/help") // requests 정보를 DB에 저장
+    public void reqHelp(@RequestBody Requests requests){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // TODO: 도움 요청 하면 requests save 하는거
     }
 }
