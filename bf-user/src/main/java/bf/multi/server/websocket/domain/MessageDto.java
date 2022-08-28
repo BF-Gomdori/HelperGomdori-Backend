@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @Setter
 @ToString
 @NoArgsConstructor
-public class Message {
+public class MessageDto {
     private MessageType type;
     private String sub; // 어디로 구독할 지?
     private String jwt;
@@ -23,7 +23,7 @@ public class Message {
     }
 
     @Builder
-    public Message(MessageType type, String sub, String jwt, Location location, Timestamp time) {
+    public MessageDto(MessageType type, String sub, String jwt, Location location, Timestamp time) {
         this.type = type;
         this.sub = sub;
         this.jwt = jwt;
