@@ -9,7 +9,6 @@ import bf.multi.server.service.UserService;
 import bf.multi.server.websocket.domain.HelpRequestDto;
 import bf.multi.server.websocket.domain.HelpeePingDto;
 import bf.multi.server.websocket.domain.HelperPingDto;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,8 +48,8 @@ public class ApiController {
                 .type(helpee.getType())
                 .helpRequestDto(HelpRequestDto.builder()
                         .detailLocation(requests.getLocation())
-                        .requestDetail(requests.getReqDetail())
-                        .requestType(requests.getReqType())
+                        .requestDetail(requests.getRequestDetail())
+                        .requestType(requests.getRequestType())
                         .build())
                 .build();
     }
