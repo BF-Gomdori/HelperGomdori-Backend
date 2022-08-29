@@ -87,6 +87,11 @@ public class GomdoriService {
                 .requestDetail(messageDto.getHelpRequest().getRequestDetail())
                 .location(messageDto.getHelpRequest().getDetailLocation())
                 .x(messageDto.getLocation().getX()).y(messageDto.getLocation().getY())
+                .helpee(helpee)
+                .complete(false)
+                .requestType(messageDto.getHelpRequest().getRequestType())
+                .requestDetail(messageDto.getHelpRequest().getRequestDetail())
+                .location(messageDto.getHelpRequest().getDetailLocation())
                 .requestTime(new Timestamp(System.currentTimeMillis()))
                 .build();
         requestsRepository.save(requests);
