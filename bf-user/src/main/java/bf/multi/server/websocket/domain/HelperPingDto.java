@@ -9,8 +9,8 @@ import javax.persistence.Column;
 @Data
 @NoArgsConstructor
 public class HelperPingDto {
-    private String name;
     private String photoLink;
+    private String name;
     private String phone;
     private String gender;
     private Integer age;
