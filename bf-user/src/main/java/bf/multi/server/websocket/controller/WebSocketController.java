@@ -4,7 +4,9 @@ import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.security.JwtTokenProvider;
+import bf.multi.server.service.UserService;
 import bf.multi.server.websocket.domain.HelpMessage;
+import bf.multi.server.websocket.domain.HelperPingDto;
 import bf.multi.server.websocket.domain.MessageDto;
 import bf.multi.server.websocket.service.GomdoriService;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.Optional;
@@ -26,6 +25,7 @@ import java.util.Optional;
 @CrossOrigin
 public class GomdoriController {
     private final UserRepository userRepository;
+    private final UserService userService;
     private final GomdoriService gomdoriService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -42,7 +42,13 @@ public class GomdoriController {
     }
 
     // 베프의 핑을 눌렀을 때 보이는 정보
-
+    @GetMapping("/helper/ping")
+    public User getInfo(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("username: "+userDetails.getUsername()+"password: "+userDetails.getPassword());
+        User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
+        return user;
+    }
     // 곰돌이가 도움 요청할 때 방 생성
     @MessageMapping("/help") // 메인 맵에다가 자신의 위치 및 도움 필요 정보 뿌림
     public void reqHelp(HelpMessage helpMessage){
