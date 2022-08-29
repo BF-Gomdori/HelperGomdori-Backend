@@ -2,17 +2,15 @@ package bf.multi.server.domain.helps;
 
 import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.domain.requests.Requests;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Getter
+@Setter
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"helper","requests"})
 @Entity
 @Table(name = "HELPS")
 public class Helps {
@@ -25,24 +23,24 @@ public class Helps {
     @Column(name = "ID")
     private Long id;
 
-    @ToString.Exclude
+//    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "HELPER_ID", nullable = false)
     private Helper helper;
 
-    @ToString.Exclude
+//    @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "REQUEST_ID", nullable = false)
+    @JoinColumn(name = "REQUEST_ID")
     private Requests requests;
 
-    @Column(name = "ACCEPT_TIME", nullable = false, columnDefinition = "TIMESTAMP")
+    @Column(name = "ACCEPT_TIME", columnDefinition = "TIMESTAMP")
     private Timestamp acceptTime;
 
     @Column(name = "FINISH_TIME", columnDefinition = "TIMESTAMP")
     private Timestamp finishTime;
 
     @Column(name = "SUCCESS", length = 1, nullable = false)
-    private String success;
+    private boolean success;
 
     @Column(name = "HELPER_RATE", nullable = false)
     private Double helperRate; // TODO: 기본값 2.5로 지정 필요
@@ -57,7 +55,7 @@ public class Helps {
     private String helpeeMessage;
 
     @Builder
-    public Helps(Helper helper, Requests requests, Timestamp acceptTime, Timestamp finishTime, String success, Double helperRate, Double helpeeRate, String helperMessage, String helpeeMessage) {
+    public Helps(Helper helper, Requests requests, Timestamp acceptTime, Timestamp finishTime, boolean success, Double helperRate, Double helpeeRate, String helperMessage, String helpeeMessage) {
         this.helper = helper;
         this.requests = requests;
         this.acceptTime = acceptTime;
