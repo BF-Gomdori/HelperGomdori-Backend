@@ -6,24 +6,20 @@ import bf.multi.server.domain.helps.HelpsRepository;
 import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.domain.requests.RequestsRepository;
 import bf.multi.server.domain.user.User;
+import bf.multi.server.service.RequestsService;
 import bf.multi.server.service.UserService;
 import bf.multi.server.websocket.domain.HelpRequestDto;
 import bf.multi.server.websocket.domain.HelpeePingDto;
 import bf.multi.server.websocket.domain.HelperPingDto;
-import io.swagger.annotations.Api;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
-
-import javax.websocket.WebSocketContainer;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,9 +31,11 @@ public class ApiController {
     private final HelpsRepository helpsRepository;
     private final RequestsRepository requestsRepository;
 
+    private final RequestsService requestsService;
+
     // 베프의 핑을 눌렀을 때 보이는 정보
     @GetMapping("/helper/ping")
-    public HelperPingDto getHelperPingInfo(){
+    public HelperPingDto getHelperPingInfo() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
         Helper helper = userService.loadHelperByEncodedEmail(userDetails.getPassword());
@@ -50,15 +48,15 @@ public class ApiController {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
         Helpee helpee = userService.loadHelpeeByEncodedEmail(userDetails.getPassword());
-        Requests requests = requestsRepository.findDistinctTopByHelpeeOrderByRequestTimeDesc(helpee);
+        Requests requests = requestsService.loadRecentByHelpee(helpee);
         return HelpeePingDto.builder()
                 .name(user.getUsername())
                 .photoLink(user.getPhotoLink())
                 .type(helpee.getType())
                 .helpRequestDto(HelpRequestDto.builder()
                         .detailLocation(requests.getLocation())
-                        .requestDetail(requests.getReqDetail())
-                        .requestType(requests.getReqType())
+                        .requestDetail(requests.getRequestDetail())
+                        .requestType(requests.getRequestType())
                         .build())
                 .build();
     }

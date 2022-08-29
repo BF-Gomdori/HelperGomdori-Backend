@@ -66,8 +66,8 @@ public class AuthController {
 
     @PostMapping("/signup/helpee")
     public HelpeeResponseDto helpeeSignup(
-            @RequestBody HelpeeSignUpDto helpeeSignUpDto) {
-
+            @RequestBody String type) {
+        HelpeeSignUpDto helpeeSignUpDto = HelpeeSignUpDto.builder().type(type).build();
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         helpeeSignUpDto.setUser(authService.getUserByPassword(userDetails.getPassword()));
         Helpee helpee = authService.connectHelpee(helpeeSignUpDto);
@@ -75,12 +75,14 @@ public class AuthController {
         return HelpeeResponseDto.from(helpee);
     }
 
+
     @PostMapping("/signup/helper")
-    public HelperResponseDto helperSignup(
-            @RequestBody HelperSignUpDto helperSignUpDto) {
+    public HelperResponseDto helperSignup() {
+        HelperSignUpDto helperSignUpDto = new HelperSignUpDto();
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         helperSignUpDto.setUser(authService.getUserByPassword(userDetails.getPassword()));
         Helper helper = authService.connectHelper(helperSignUpDto);
+
         return HelperResponseDto.from(helper);
     }
 
