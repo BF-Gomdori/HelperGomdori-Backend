@@ -2,8 +2,11 @@ package bf.multi.server.controller;
 
 import bf.multi.server.domain.dto.helpee.HelpeeResponseDto;
 import bf.multi.server.domain.dto.helpee.HelpeeSignUpDto;
+import bf.multi.server.domain.dto.helper.HelperResponseDto;
+import bf.multi.server.domain.dto.helper.HelperSignUpDto;
 import bf.multi.server.domain.dto.user.*;
 import bf.multi.server.domain.helpee.Helpee;
+import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.service.AuthService;
 import bf.multi.server.service.KakaoUserService;
@@ -70,6 +73,15 @@ public class AuthController {
         Helpee helpee = authService.connectHelpee(helpeeSignUpDto);
 
         return HelpeeResponseDto.from(helpee);
+    }
+
+    @PostMapping("/signup/helper")
+    public HelperResponseDto helperSignup(
+            @RequestBody HelperSignUpDto helperSignUpDto) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        helperSignUpDto.setUser(authService.getUserByPassword(userDetails.getPassword()));
+        Helper helper = authService.connectHelper(helperSignUpDto);
+        return HelperResponseDto.from(helper);
     }
 
 }
