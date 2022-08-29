@@ -3,14 +3,10 @@ package bf.multi.server.websocket.handler;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.security.JwtTokenProvider;
-import bf.multi.server.websocket.controller.GomdoriController;
-import bf.multi.server.websocket.service.GomdoriService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.broker.SimpleBrokerMessageHandler;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
@@ -35,7 +31,7 @@ public class StompHandler implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-//        log.info("WebSocket connect : "+String.valueOf(message.getHeaders()));
+//        log.info("WebSocket Message : "+String.valueOf(message.getHeaders()));
         StompHeaderAccessor accessor = StompHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if(StompCommand.CONNECT.equals(accessor.getCommand())) {
             if(!jwtTokenProvider.validateToken(accessor.getFirstNativeHeader("Authorization")))
@@ -57,9 +53,11 @@ public class StompHandler implements ChannelInterceptor {
             );
             log.info("SUBSCRIBE [{}] || 속해있는 방 : [{}]",String.valueOf(accessor.getUser().getName()),roomId);
         }
+        else if(StompCommand.DISCONNECT.equals(accessor.getCommand())){ // 종료할 때
+            log.info(accessor.toString());
+        }
         else if(StompCommand.SEND.equals(accessor.getCommand())){
             log.info("Send : "+String.valueOf(message));
-            log.info("Send : "+String.valueOf(message.getHeaders().get("simpUser")));
         }
         return message;
     }
