@@ -39,14 +39,14 @@ class RequestsRepositoryTest {
         Timestamp requestTime = new Timestamp(System.currentTimeMillis());
 
         Requests requests = Requests.builder()
-                .helpee(helpee).message(message)
+                .helpee(helpee).reqType("계단/리프트").reqDetail(message)
                 .location(location).requestTime(requestTime)
                 .build();
         requests.changeHelpee();
 
         requestsRepository.save(requests);
 
-        Assertions.assertEquals(message, requests.getMessage());
+//        Assertions.assertEquals(message, requests.getMessage());
         Assertions.assertEquals(helpee.getUser().getUsername(), requests.getHelpee().getUser().getUsername());
         Assertions.assertEquals(helpeeRepository.findById(userRepository
                         .findByEmail("example@gmail.com")
@@ -54,7 +54,7 @@ class RequestsRepositoryTest {
                 .orElseThrow().getRequestsList().get(0)
                 .getLocation(), requestsRepository
                 .findAllByHelpee_User_Email(helpee.getUser().getEmail())
-                .get(0).getLocation()
+                .get().getLocation()
         );
 
     }

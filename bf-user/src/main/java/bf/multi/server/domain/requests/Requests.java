@@ -14,7 +14,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"helpee","helpsList"})
 @Entity
 @Table(name = "REQUESTS")
 public class Requests {
@@ -26,13 +26,15 @@ public class Requests {
     @Column(name = "ID")
     private Long id;
 
-    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "HELPEE_ID", nullable = false)
     private Helpee helpee;
 
-    @Column(name = "MSG", columnDefinition = "TEXT")
-    private String message;
+    @Column(name = "HELP_REQUEST_TYPE", columnDefinition = "TEXT")
+    private String reqType;
+
+    @Column(name = "HELP_REQUEST_DETAIL", columnDefinition = "TEXT")
+    private String reqDetail;
 
     @Column(name = "LOCATION", length = 45)
     private String location;
@@ -45,14 +47,14 @@ public class Requests {
         helpee.getRequestsList().add(this);
     }
 
-    @ToString.Exclude
     @OneToMany(mappedBy = "requests")
     private List<Helps> helpsList = new ArrayList<>();
 
     @Builder
-    public Requests(Helpee helpee, String message, String location, Timestamp requestTime) {
+    public Requests(Helpee helpee, String reqType, String reqDetail, String location, Timestamp requestTime) {
         this.helpee = helpee;
-        this.message = message;
+        this.reqType = reqType;
+        this.reqDetail = reqDetail;
         this.location = location;
         this.requestTime = requestTime;
     }
