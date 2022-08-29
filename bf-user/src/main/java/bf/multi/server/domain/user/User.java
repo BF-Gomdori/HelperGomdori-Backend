@@ -1,5 +1,6 @@
 package bf.multi.server.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
+@ToString(exclude = {"helper", "helpee"})
 //@NoArgsConstructor
 @Entity
 public class User {
@@ -59,11 +61,9 @@ public class User {
     private UserRole role;
 
     @OneToOne(mappedBy = "user")
-    @ToString.Exclude
     private Helper helper;
 
     @OneToOne(mappedBy = "user")
-    @ToString.Exclude
     private Helpee helpee;
 
     @PrePersist
@@ -89,23 +89,4 @@ public class User {
         this.role = roleUser;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", photoLink='" + photoLink + '\'' +
-                ", gender='" + gender + '\'' +
-                ", phone='" + phone + '\'' +
-                ", age=" + age +
-                ", intro='" + intro + '\'' +
-                ", startDate=" + startDate +
-                ", modifiedDate=" + modifiedDate +
-                ", role=" + role +
-                ", helper=" + helper +
-                ", helpee=" + helpee +
-                '}';
-    }
 }

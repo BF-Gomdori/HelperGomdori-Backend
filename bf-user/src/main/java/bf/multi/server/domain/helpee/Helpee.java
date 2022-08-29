@@ -2,6 +2,7 @@ package bf.multi.server.domain.helpee;
 
 import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.domain.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"user","requestsList"})
 @Entity
 @Table(name = "HELPEE")
 public class Helpee {
@@ -43,7 +44,6 @@ public class Helpee {
     private Integer hearts;
 
     @OneToMany(mappedBy = "helpee")
-    @ToString.Exclude
     private List<Requests> requestsList = new ArrayList<>();
 
     @Builder
