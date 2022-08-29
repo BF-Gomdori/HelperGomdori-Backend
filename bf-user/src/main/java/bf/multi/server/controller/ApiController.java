@@ -3,8 +3,8 @@ package bf.multi.server.controller;
 import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.domain.requests.Requests;
-import bf.multi.server.domain.requests.RequestsRepository;
 import bf.multi.server.domain.user.User;
+import bf.multi.server.service.RequestsService;
 import bf.multi.server.service.UserService;
 import bf.multi.server.websocket.domain.HelpRequestDto;
 import bf.multi.server.websocket.domain.HelpeePingDto;
@@ -24,11 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiController {
 
     private final UserService userService;
-    private final RequestsRepository requestsRepository;
+
+    private final RequestsService requestsService;
 
     // 베프의 핑을 눌렀을 때 보이는 정보
     @GetMapping("/helper/ping")
-    public HelperPingDto getHelperPingInfo(){
+    public HelperPingDto getHelperPingInfo() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
         Helper helper = userService.loadHelperByEncodedEmail(userDetails.getPassword());
@@ -41,7 +42,7 @@ public class ApiController {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
         Helpee helpee = userService.loadHelpeeByEncodedEmail(userDetails.getPassword());
-        Requests requests = requestsRepository.findDistinctTopByHelpeeOrderByRequestTimeDesc(helpee);
+        Requests requests = requestsService.loadRecentByHelpee(helpee);
         return HelpeePingDto.builder()
                 .name(user.getUsername())
                 .photoLink(user.getPhotoLink())
