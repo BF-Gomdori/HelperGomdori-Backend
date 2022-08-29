@@ -14,15 +14,18 @@ import java.sql.Timestamp;
 public class RequestsCreateDto {
     private Helpee helpee;
 
-    private String message;
+    private String requestType;
+
+    private String requestDetail;
 
     private String location;
 
     private Timestamp requestTime;
 
     @Builder
-    public RequestsCreateDto(String message, String location, Timestamp requestTime) {
-        this.message = message;
+    public RequestsCreateDto(String requestType, String requestDetail, String location, Timestamp requestTime) {
+        this.requestType = requestType;
+        this.requestDetail = requestDetail;
         this.location = location;
         this.requestTime = requestTime;
     }
@@ -36,7 +39,8 @@ public class RequestsCreateDto {
         return Requests
                 .builder()
                 .helpee(helpee)
-                .message(message)
+                .requestType(requestType)
+                .requestDetail(requestDetail)
                 .location(location)
                 .requestTime(requestTime)
                 .build();
