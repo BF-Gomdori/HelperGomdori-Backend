@@ -12,16 +12,19 @@ import java.sql.Timestamp;
 public class RequestsResponseDto {
     private Long id;
 
-    private String message;
+    private String requestType;
+
+    private String requestDetail;
 
     private String location;
 
     private Timestamp requestTime;
 
     @Builder
-    public RequestsResponseDto(Long id, String message, String location, Timestamp requestTime) {
+    public RequestsResponseDto(Long id, String requestType, String requestDetail, String location, Timestamp requestTime) {
         this.id = id;
-        this.message = message;
+        this.requestType = requestType;
+        this.requestDetail = requestDetail;
         this.location = location;
         this.requestTime = requestTime;
     }
@@ -31,7 +34,8 @@ public class RequestsResponseDto {
         return RequestsResponseDto
                 .builder()
                 .id(requests.getId())
-                .message(requests.getMessage())
+                .requestType(requests.getRequestType())
+                .requestDetail(requests.getRequestDetail())
                 .location(requests.getLocation())
                 .requestTime(requests.getRequestTime())
                 .build();
