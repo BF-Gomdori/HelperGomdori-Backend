@@ -9,17 +9,14 @@ import bf.multi.server.websocket.service.GomdoriService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
 
 @Slf4j
-@RestController
+@Controller
 @RequiredArgsConstructor
 @CrossOrigin
 public class WebSocketController {
@@ -44,7 +41,17 @@ public class WebSocketController {
             log.info("도움 요청서 : " + messageDto.getHelpRequestDto());
             gomdoriService.sendMessage(messageDto);
         }
+//        else if(messageDto.getType().equals(MessageDto.MessageType.ACCEPT)){
+//            log.info("============= 도움 곰돌이 매칭 성사!! =============");
+//            gomdoriService.sendMessage(messageDto);
+//        }
     }
+
+    // 매칭 되었을 때
+//    @SubscribeMapping
+//    public void matching(){
+//
+//    }
 
     // 곰돌이가 도움 요청할 때 방 생성
     @MessageMapping("/help") // 메인 맵에다가 자신의 위치 및 도움 필요 정보 뿌림
@@ -55,9 +62,4 @@ public class WebSocketController {
         gomdoriService.sendMessage(messageDto);
     }
 
-    @PostMapping("/gomdori/help") // requests 정보를 DB에 저장
-    public void reqHelp(@RequestBody Requests requests){
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        // TODO: 도움 요청 하면 requests save 하는거
-    }
 }

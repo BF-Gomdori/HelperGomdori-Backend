@@ -30,6 +30,9 @@ public class Requests {
     @JoinColumn(name = "HELPEE_ID", nullable = false)
     private Helpee helpee;
 
+    @Column(name = "COMPLETE", length = 1, nullable = false)
+    private boolean complete;
+
     @Column(name = "HELP_REQUEST_TYPE", columnDefinition = "TEXT")
     private String requestType;
 
@@ -51,8 +54,9 @@ public class Requests {
     private List<Helps> helpsList = new ArrayList<>();
 
     @Builder
-    public Requests(Helpee helpee, String requestType, String requestDetail, String location, Timestamp requestTime) {
+    public Requests(Helpee helpee,boolean complete, String requestType, String requestDetail, String location, Timestamp requestTime) {
         this.helpee = helpee;
+        this.complete = complete;
         this.requestType = requestType;
         this.requestDetail = requestDetail;
         this.location = location;

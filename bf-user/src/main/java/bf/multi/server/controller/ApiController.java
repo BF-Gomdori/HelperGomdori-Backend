@@ -2,13 +2,17 @@ package bf.multi.server.controller;
 
 import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helper.Helper;
+import bf.multi.server.domain.helps.HelpsRepository;
 import bf.multi.server.domain.requests.Requests;
+import bf.multi.server.domain.requests.RequestsRepository;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.service.RequestsService;
 import bf.multi.server.service.UserService;
 import bf.multi.server.websocket.domain.HelpRequestDto;
 import bf.multi.server.websocket.domain.HelpeePingDto;
 import bf.multi.server.websocket.domain.HelperPingDto;
+import lombok.Builder;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiController {
 
     private final UserService userService;
+    private final HelpsRepository helpsRepository;
+    private final RequestsRepository requestsRepository;
 
     private final RequestsService requestsService;
 
@@ -53,6 +59,24 @@ public class ApiController {
                         .requestType(requests.getRequestType())
                         .build())
                 .build();
+    }
+
+    // 현재 접속자 수
+    @GetMapping("/connect/users")
+    public UserNum countBfAndGomdori(){
+        long bf = helpsRepository.findAllBySuccessIsFalse().stream().count();
+        long gomdori = requestsRepository.findAllByCompleteIsFalse().stream().count();
+        return UserNum.builder().bf(bf).gomdori(gomdori).build();
+    }
+    @Data
+    static class UserNum{
+        long bf;
+        long gomdori;
+        @Builder
+        public UserNum(long bf, long gomdori) {
+            this.bf = bf;
+            this.gomdori = gomdori;
+        }
     }
 
 }

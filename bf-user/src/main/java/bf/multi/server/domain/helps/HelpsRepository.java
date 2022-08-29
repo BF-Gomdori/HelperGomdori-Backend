@@ -12,4 +12,7 @@ public interface HelpsRepository extends JpaRepository<Helps, Long> {
     List<Helps> findAllByRequests_Helpee_User_Email(String email);
 
     List<Helps> findAllByHelper_User_Email(String email);
+    List<Helps> findAllBySuccessIsFalse();
+    Helps findAllBySuccessIsFalseAndHelper_User_Username(String username);
+
 }

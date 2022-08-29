@@ -85,6 +85,7 @@ public class SecurityConfig {
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // CORS 허용
                 .antMatchers(
                         "/",
+                        "/api/connect/users",
                         "/dori/**", // websocket
                         "/v2/api-docs",
                         "/swagger-resources/**",
