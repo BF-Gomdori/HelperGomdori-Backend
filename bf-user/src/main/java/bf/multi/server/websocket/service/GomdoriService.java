@@ -51,8 +51,8 @@ public class GomdoriService {
         Requests requests = Requests.builder()
                 .helpee(helpee)
                 .complete(false)
-                .reqType(messageDto.getHelpRequestDto().getRequestType())
-                .reqDetail(messageDto.getHelpRequestDto().getRequestDetail())
+                .requestType(messageDto.getHelpRequestDto().getRequestType())
+                .requestDetail(messageDto.getHelpRequestDto().getRequestDetail())
                 .location(messageDto.getHelpRequestDto().getDetailLocation())
                 .requestTime(new Timestamp(System.currentTimeMillis()))
                 .build();
