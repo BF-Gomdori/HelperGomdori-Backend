@@ -13,6 +13,7 @@ public class MessageDto {
     private String sub; // 어디로 구독할 지?
     private String jwt;
     private Location location;
+    private HelpRequestDto helpRequestDto;
     private Timestamp time;
 
     public enum MessageType{ // 메시지 type을 다음 4가지 상황으로 정의
