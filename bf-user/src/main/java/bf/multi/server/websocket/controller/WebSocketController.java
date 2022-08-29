@@ -2,7 +2,6 @@ package bf.multi.server.websocket.controller;
 
 import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.domain.user.User;
-import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.security.JwtTokenProvider;
 import bf.multi.server.service.UserService;
 import bf.multi.server.websocket.domain.MessageDto;
@@ -12,17 +11,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
-import java.util.Optional;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
 public class WebSocketController {
-    private final UserRepository userRepository;
     private final UserService userService;
     private final GomdoriService gomdoriService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -31,11 +31,11 @@ public class WebSocketController {
     @MessageMapping("/enter")
     public void initEnter(MessageDto messageDto) {
         String username = jwtTokenProvider.getUsernameByToken(messageDto.getJwt());
-        Optional<User> user = userRepository.findByUsername(username);
+        User user = userService.loadUserByUsername(username);
         if(messageDto.getType().equals(MessageDto.MessageType.ENTER)) {
             log.info("============= 베:프 현재 위치 전송 =============");
             log.info("[" + new Timestamp(System.currentTimeMillis()) + "] username: "
-                    + user.get().getUsername() + " 님이 접속하셨습니다.");
+                    + user.getUsername() + " 님이 접속하셨습니다.");
             log.info("현재 위치 : [" + messageDto.getLocation().toString() + "]");
             gomdoriService.sendMessage(messageDto);
         }
