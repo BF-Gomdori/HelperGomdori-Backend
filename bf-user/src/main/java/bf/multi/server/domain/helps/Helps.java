@@ -33,6 +33,12 @@ public class Helps {
     @JoinColumn(name = "REQUEST_ID")
     private Requests requests;
 
+    @Column(name = "X")
+    private String x;
+
+    @Column(name = "Y")
+    private String y;
+
     @Column(name = "ACCEPT_TIME", columnDefinition = "TIMESTAMP")
     private Timestamp acceptTime;
 
@@ -55,9 +61,16 @@ public class Helps {
     private String helpeeMessage;
 
     @Builder
-    public Helps(Helper helper, Requests requests, Timestamp acceptTime, Timestamp finishTime, boolean success, Double helperRate, Double helpeeRate, String helperMessage, String helpeeMessage) {
+    public Helps(Helper helper, Requests requests,
+                 String x, String y,
+                 Timestamp acceptTime, Timestamp finishTime,
+                 boolean success,
+                 Double helperRate, Double helpeeRate,
+                 String helperMessage, String helpeeMessage) {
         this.helper = helper;
         this.requests = requests;
+        this.x = x;
+        this.y = y;
         this.acceptTime = acceptTime;
         this.finishTime = finishTime;
         this.success = success;

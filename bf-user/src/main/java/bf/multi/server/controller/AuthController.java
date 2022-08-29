@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -66,8 +65,7 @@ public class AuthController {
 
     @PostMapping("/signup/helpee")
     public HelpeeResponseDto helpeeSignup(
-            @RequestBody String type) {
-        HelpeeSignUpDto helpeeSignUpDto = HelpeeSignUpDto.builder().type(type).build();
+            @RequestBody HelpeeSignUpDto helpeeSignUpDto) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         helpeeSignUpDto.setUser(authService.getUserByPassword(userDetails.getPassword()));
         Helpee helpee = authService.connectHelpee(helpeeSignUpDto);

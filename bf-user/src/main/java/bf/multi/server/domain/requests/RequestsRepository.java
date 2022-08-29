@@ -11,7 +11,7 @@ public interface RequestsRepository extends JpaRepository<Requests, Long> {
 
 //    List<Requests> findAllByHelpee_User_Email(String email);
     Optional<Requests> findAllByHelpee_User_Email(String email);
-    Requests findDistinctFirstByHelpee(Helpee helpee);
+    Requests findDistinctFirstByHelpeeAndCompleteIsFalse(Helpee helpee);
     Requests findDistinctTopByHelpeeOrderByRequestTimeDesc(Helpee helpee);
     List<Requests> findAllByCompleteIsFalse();
 }

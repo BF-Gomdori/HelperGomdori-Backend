@@ -1,25 +1,20 @@
 package bf.multi.server.controller;
 
-import bf.multi.server.domain.helpee.Helpee;
-import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.domain.helps.HelpsRepository;
-import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.domain.requests.RequestsRepository;
-import bf.multi.server.domain.user.User;
-import bf.multi.server.service.RequestsService;
-import bf.multi.server.service.UserService;
-import bf.multi.server.websocket.domain.HelpRequestDto;
 import bf.multi.server.websocket.domain.HelpeePingDto;
 import bf.multi.server.websocket.domain.HelperPingDto;
+import bf.multi.server.websocket.domain.MatchingDataDto;
+import bf.multi.server.websocket.service.GomdoriService;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,38 +22,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class ApiController {
 
-    private final UserService userService;
     private final HelpsRepository helpsRepository;
     private final RequestsRepository requestsRepository;
 
-    private final RequestsService requestsService;
+    private final GomdoriService gomdoriService;
 
     // 베프의 핑을 눌렀을 때 보이는 정보
     @GetMapping("/helper/ping")
     public HelperPingDto getHelperPingInfo() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
-        Helper helper = userService.loadHelperByEncodedEmail(userDetails.getPassword());
-        return new HelperPingDto(user, helper);
+        return gomdoriService.responseHelperPing();
     }
 
     // 곰돌이가 도움 요청 해놓은 핑 눌렀을 때 보이는 정보
     @GetMapping("/helpee/ping")
-    public HelpeePingDto getHelpeePingInfo(){
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
-        Helpee helpee = userService.loadHelpeeByEncodedEmail(userDetails.getPassword());
-        Requests requests = requestsService.loadRecentByHelpee(helpee);
-        return HelpeePingDto.builder()
-                .name(user.getUsername())
-                .photoLink(user.getPhotoLink())
-                .type(helpee.getType())
-                .helpRequestDto(HelpRequestDto.builder()
-                        .detailLocation(requests.getLocation())
-                        .requestDetail(requests.getRequestDetail())
-                        .requestType(requests.getRequestType())
-                        .build())
-                .build();
+    public HelpeePingDto getHelpeePingInfo(HttpServletRequest httpServletRequest){
+        return gomdoriService.responseHelpeePing(httpServletRequest);
     }
 
     // 현재 접속자 수
@@ -77,6 +55,16 @@ public class ApiController {
             this.bf = bf;
             this.gomdori = gomdori;
         }
+    }
+
+    // 도움 주기/받기 매칭 됐을 때
+    @GetMapping("/accept")
+    public MatchingDataDto matching(HttpServletRequest request){
+        String firstBearerToken = request.getHeader("Authorization")
+                .substring(7, request.getHeader("Authorization").length());
+        String secondBearerToken = request.getHeader("token")
+                .substring(7, request.getHeader("token").length());
+        return gomdoriService.generateMatchingData(firstBearerToken, secondBearerToken);
     }
 
 }

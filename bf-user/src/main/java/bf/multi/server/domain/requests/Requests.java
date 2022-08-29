@@ -42,6 +42,12 @@ public class Requests {
     @Column(name = "LOCATION", length = 45)
     private String location;
 
+    @Column(name = "X")
+    private String x;
+
+    @Column(name = "Y")
+    private String y;
+
     @Column(name = "REQUEST_TIME", columnDefinition = "TIMESTAMP")
     private Timestamp requestTime;
 
@@ -54,12 +60,17 @@ public class Requests {
     private List<Helps> helpsList = new ArrayList<>();
 
     @Builder
-    public Requests(Helpee helpee,boolean complete, String requestType, String requestDetail, String location, Timestamp requestTime) {
+    public Requests(Helpee helpee, boolean complete,
+                    String requestType, String requestDetail,
+                    String location, String x, String y,
+                    Timestamp requestTime) {
         this.helpee = helpee;
         this.complete = complete;
         this.requestType = requestType;
         this.requestDetail = requestDetail;
         this.location = location;
+        this.x = x;
+        this.y = y;
         this.requestTime = requestTime;
     }
 }

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.security.access.AccessDeniedException;
@@ -54,14 +55,16 @@ public class StompHandler implements ChannelInterceptor {
             log.info("SUBSCRIBE [{}] || 속해있는 방 : [{}]",String.valueOf(accessor.getUser().getName()),roomId);
         }
         else if(StompCommand.DISCONNECT.equals(accessor.getCommand())){ // 종료할 때
-            log.info(accessor.toString());
+            String roomId = getRoomId(
+                    Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId")
+            );
+            log.info("DISCONNECT [{}] : {}", accessor.getUser().getName(), roomId);
         }
         else if(StompCommand.SEND.equals(accessor.getCommand())){
             log.info("Send : "+String.valueOf(message));
         }
         return message;
     }
-
 
     public String getRoomId(String destination){
         int lastIndex = destination.lastIndexOf('/');
