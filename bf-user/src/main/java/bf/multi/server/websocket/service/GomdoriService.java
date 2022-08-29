@@ -7,7 +7,6 @@ import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.domain.requests.RequestsRepository;
 import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.security.JwtTokenProvider;
-import bf.multi.server.websocket.domain.HelpMessage;
 import bf.multi.server.websocket.domain.MessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -28,14 +27,16 @@ public class GomdoriService {
 
     // 곰돌이가 도움 요청할 때 채팅방 하나 따로 생성
     @Transactional
-    public HelpMessage createHelp(HelpMessage helpMessage) {
-        String jwt = helpMessage.getHelpJwt();
-        Helpee helpee = helpeeRepository.findByUser_Username(jwtTokenProvider.getUsernameByToken(jwt));
-        Requests req = requestsRepository.findDistinctFirstByHelpee(helpee);
-        helpMessage.setHelpRequest(req);
-        simpMessageSendingOperations.convertAndSend("/map/main", helpMessage);
-//        simpMessageSendingOperations.convertAndSend("/help/"+helpMessage.getHelpRequest().getHelpee().getUser().getUsername());
-        return helpMessage;
+    public void createHelp(MessageDto messageDto) {
+        Helpee helpee = helpeeRepository.findByUser_Username(jwtTokenProvider.getUsernameByToken(messageDto.getJwt()));
+        Requests requests = Requests.builder()
+                .helpee(helpee)
+                .reqType(messageDto.getHelpRequestDto().getRequestType())
+                .reqDetail(messageDto.getHelpRequestDto().getRequestDetail())
+                .location(messageDto.getHelpRequestDto().getDetailLocation())
+                .requestTime(new Timestamp(System.currentTimeMillis()))
+                .build();
+        requestsRepository.save(requests);
     }
 
     // 베:프가 도움 요청방 입장, 유저수 + 1, 2명이니까 입장 제한 걸기
@@ -44,11 +45,21 @@ public class GomdoriService {
     public void sendMessage(MessageDto messageDto){ // 메세지 타입에 따라 동작 구분
         messageDto.setTime(new Timestamp(System.currentTimeMillis()));
         if(MessageDto.MessageType.ENTER.equals(messageDto.getType())){ // 위치 정보 표시할 때
+            // Helper 들어올 때 : 위치 정보, jwt, 접속 시간
+            messageDto.setHelpRequestDto(null);
             simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
         }else if(MessageDto.MessageType.QUIT.equals(messageDto.getType())){ // 위치 정보 표시 안 할 때
             // TODO: 뭐해줘야되지?
         }else if(MessageDto.MessageType.HELP.equals(messageDto.getType())){ // 도움 요청 할 때
-            // TODO: 채팅방 생성 및 + ?
+            // TODO: 요청사항 저장 및 + ?
+            createHelp(messageDto);
+            // 메인 화면에 정보 뿌리기
+            simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
+
+//            String helpSubName = userRepository.findByUsername(
+//                    jwtTokenProvider.getUsernameByToken(messageDto.getJwt())).get().getUsername();
+//            messageDto.setSub(helpSubName);
+//            simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
         }else if(MessageDto.MessageType.ACCEPT.equals(messageDto.getType())){ // 도움 수락 할 때
             // TODO: 베:프 구독 변경 및 위치 정보 재전송
         }
