@@ -20,11 +20,7 @@ import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final StompHandler stompHandler; // jwt 토큰 인증 핸들러
-    /**
-     * Configure message broker options.
-     *
-     * @param registry
-     */
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry
@@ -42,12 +38,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         return taskScheduler;
     }
 
-    /**
-     * Register STOMP endpoints mapping each to a specific URL and (optionally)
-     * enabling and configuring SockJS fallback options.
-     *
-     * @param registry
-     */
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
