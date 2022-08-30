@@ -44,6 +44,7 @@ public class StompHandler implements ChannelInterceptor {
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
             Authentication auth = new UsernamePasswordAuthenticationToken(user.get().getUsername(), user.get().getPassword(), authorities);
             SecurityContextHolder.getContext().setAuthentication(auth);
+            accessor.setUser(auth);
         }
         else if(StompCommand.SUBSCRIBE.equals(accessor.getCommand())){
             String roomId = getRoomId(
