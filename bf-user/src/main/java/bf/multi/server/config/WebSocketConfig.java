@@ -2,8 +2,7 @@ package bf.multi.server.config;
 
 import bf.multi.server.websocket.handler.StompHandler;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -12,19 +11,18 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 @Configuration
 @EnableWebSocketMessageBroker
-@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final StompHandler stompHandler; // jwt 토큰 인증 핸들러
+    @Autowired
+    StompHandler stompHandler; // jwt 토큰 인증 핸들러
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry
-                .enableSimpleBroker("/help","/map")
+                .enableSimpleBroker("/map")
                 // /help는 1:1 도움 요청, /main은 1:N 메인 화면에 베:프 위치 보냄
                         .setTaskScheduler(taskScheduler())
                                 .setHeartbeatValue(new long[] {3000L, 3000L});
@@ -52,4 +50,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(stompHandler); // 핸들러 등록
     }
+
+
 }
