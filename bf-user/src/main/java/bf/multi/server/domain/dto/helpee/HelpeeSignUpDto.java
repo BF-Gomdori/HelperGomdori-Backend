@@ -5,11 +5,13 @@ import bf.multi.server.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 @Getter
 @NoArgsConstructor
 public class HelpeeSignUpDto {
 
+    @JsonIgnore
     private User user;
 
     private String type;
