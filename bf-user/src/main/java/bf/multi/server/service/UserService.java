@@ -63,4 +63,11 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Helpee not found with email: " + encodedEmail));
         return helpee.getRequestsList();
     }
+
+    public boolean removeHelpeeByEncodedEmail(String encodedEmail) {
+        String email = userRepository.findByPassword(encodedEmail).get().getEmail();
+        helpeeRepository.deleteByUser_Email(email);
+
+        return true;
+    }
 }
