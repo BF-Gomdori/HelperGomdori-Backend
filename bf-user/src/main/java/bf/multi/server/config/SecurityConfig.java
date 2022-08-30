@@ -86,6 +86,7 @@ public class SecurityConfig {
                 .antMatchers(
                         "/",
                         "/api/connect/users",
+                        "/send",
                         "/dori/**", // websocket
                         "/v2/api-docs",
                         "/swagger-resources/**",
