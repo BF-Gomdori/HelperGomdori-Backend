@@ -28,10 +28,12 @@ public class HelpeeProfileResponseDto {
         static Map<String, Double> RequestsListToMap(List<Requests> requestsList) {
             Map<String, Double> requestsPercentageMap = new HashMap<>();
             for (Requests requests : requestsList) {
-                if (requestsPercentageMap.containsKey(requests.getRequestType())) {
-                    requestsPercentageMap.put(requests.getRequestType(), requestsPercentageMap.get(requests.getRequestType() + 1));
-                } else {
-                    requestsPercentageMap.put(requests.getRequestType(), 1.0);
+                if (requests.isComplete()) {
+                    if (requestsPercentageMap.containsKey(requests.getRequestType())) {
+                        requestsPercentageMap.put(requests.getRequestType(), requestsPercentageMap.get(requests.getRequestType()) + 1);
+                    } else {
+                        requestsPercentageMap.put(requests.getRequestType(), 1.0);
+                    }
                 }
             }
 
