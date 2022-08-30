@@ -2,10 +2,9 @@ package bf.multi.server.domain.requests;
 
 import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helps.Helps;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import bf.multi.server.websocket.domain.MessageDto;
+import lombok.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -72,5 +71,9 @@ public class Requests {
         this.x = x;
         this.y = y;
         this.requestTime = requestTime;
+    }
+
+    public void updateRequests(MessageDto messageDto){
+        this.complete = true;
     }
 }

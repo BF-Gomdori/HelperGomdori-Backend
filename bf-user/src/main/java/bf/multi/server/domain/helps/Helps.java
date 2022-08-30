@@ -2,13 +2,13 @@ package bf.multi.server.domain.helps;
 
 import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.domain.requests.Requests;
+import bf.multi.server.websocket.domain.MessageDto;
 import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @ToString(exclude = {"helper","requests"})
 @Entity
@@ -23,12 +23,10 @@ public class Helps {
     @Column(name = "ID")
     private Long id;
 
-//    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "HELPER_ID", nullable = false)
     private Helper helper;
 
-//    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "REQUEST_ID")
     private Requests requests;
@@ -87,5 +85,11 @@ public class Helps {
 
     public void changeRequests() {
         requests.getHelpsList().add(this);
+    }
+
+    public void updateHelps(MessageDto messageDto, Requests requests){
+        this.requests = requests;
+        this.acceptTime = new Timestamp(System.currentTimeMillis());
+        this.success = true;
     }
 }
