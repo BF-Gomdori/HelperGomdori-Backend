@@ -4,12 +4,15 @@ import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helpee.HelpeeRepository;
 import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.domain.helper.HelperRepository;
+import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -52,5 +55,12 @@ public class UserService {
     public User loadUserById(Long id) throws UsernameNotFoundException {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
+    }
+
+    public List<Requests> loadRequestsListByEncodedEmail(String encodedEmail) {
+        String email = userRepository.findByPassword(encodedEmail).get().getEmail();
+        Helpee helpee = helpeeRepository.findByUser_Email(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Helpee not found with email: " + encodedEmail));
+        return helpee.getRequestsList();
     }
 }
