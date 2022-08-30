@@ -43,7 +43,7 @@ public class UserService {
     public Helpee loadHelpeeByEncodedEmail(String encodedEmail) throws UsernameNotFoundException {
         String email = userRepository.findByPassword(encodedEmail).get().getEmail();
         Helpee helpee = helpeeRepository.findByUser_Email(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Helper not found with email: " + encodedEmail));
+                .orElseThrow(() -> new UsernameNotFoundException("Helpee not found with email: " + encodedEmail));
         return helpee;
     }
 
