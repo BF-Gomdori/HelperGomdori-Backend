@@ -11,8 +11,7 @@ import java.sql.Timestamp;
 public class MessageDto {
     private MessageType type;
     private String sub; // 어디로 구독할 지?
-    private String helperJwt;
-    private String helpeeJwt;
+    private String jwt;
     private Location location;
     private HelpRequestDto helpRequest;
     private Timestamp time;
@@ -25,10 +24,12 @@ public class MessageDto {
     }
 
     @Builder
-    public MessageDto(MessageType type, String sub, Location location, Timestamp time) {
+    public MessageDto(MessageType type, String sub, String jwt, Location location, HelpRequestDto helpRequest, Timestamp time) {
         this.type = type;
         this.sub = sub;
+        this.jwt = jwt;
         this.location = location;
-        this.time = new Timestamp(System.currentTimeMillis());
+        this.helpRequest = helpRequest;
+        this.time = time;
     }
 }
