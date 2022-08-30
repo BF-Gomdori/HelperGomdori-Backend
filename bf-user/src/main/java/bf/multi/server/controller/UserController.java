@@ -1,5 +1,8 @@
 package bf.multi.server.controller;
 
+import bf.multi.server.domain.dto.helpee.HelpeeProfileResponseDto;
+import bf.multi.server.domain.dto.user.UserProfileResponseDto;
+import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +26,31 @@ public class UserController {
         // TODO: SecurityContextHolder 에서 유저 정보 조회
         // https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/test-method.html
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        log.info("username: "+userDetails.getUsername()+"password: "+userDetails.getPassword());
+        log.info("username: " + userDetails.getUsername() + "password: " + userDetails.getPassword());
         User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
         return user;
+    }
+
+    @GetMapping("/profile")
+    public HelpeeProfileResponseDto helpeeProfile() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
+        Helpee helpee = userService.loadHelpeeByEncodedEmail(userDetails.getPassword());
+
+        return HelpeeProfileResponseDto
+                .builder()
+                .userProfileResponseDto(
+                        UserProfileResponseDto
+                                .builder()
+                                .id(user.getId())
+                                .username(user.getUsername())
+                                .photoLink(user.getPhotoLink())
+                                .gender(user.getGender())
+                                .age(user.getAge())
+                                .intro(user.getIntro())
+                                .build()
+                )
+                .requests(helpee.getRequestsList())
+                .build();
     }
 }
