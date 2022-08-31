@@ -32,7 +32,7 @@ public class BfUserApplication {
 					.photoLink("사진")
 					.gender("남")
 					.phone("010-9134-7564")
-					.age(24)
+					.age("20대 중반")
 					.startDate(new Timestamp(System.currentTimeMillis()))
 					.modifiedDate(new Timestamp(System.currentTimeMillis()))
 					.role(UserRole.ROLE_ADMIN)

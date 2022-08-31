@@ -16,4 +16,5 @@ public interface RequestsRepository extends JpaRepository<Requests, Long> {
     Requests findDistinctTopByHelpeeOrderByRequestTimeDesc(Helpee helpee);
     List<Requests> findAllByCompleteIsFalse();
     List<Requests> findAllByCompleteIsFalseAndRequestTimeBefore(Timestamp timestamp);
+    Requests findDistinctTopByCompleteIsFalseAndHelpee_User_UsernameOrderByRequestTimeDesc(String username);
 }

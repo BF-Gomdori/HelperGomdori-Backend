@@ -19,11 +19,11 @@ public class UserProfileResponseDto {
 
     private String gender;
 
-    private Integer age;
+    private String age;
 
 
     @Builder
-    public UserProfileResponseDto(Long id, String username, String email, String password, String photoLink, String gender, String phone, Integer age, Timestamp startDate, Timestamp modifiedDate) {
+    public UserProfileResponseDto(Long id, String username, String email, String password, String photoLink, String gender, String phone, String age, Timestamp startDate, Timestamp modifiedDate) {
         this.id = id;
         this.username = username;
         this.photoLink = photoLink;

@@ -56,6 +56,7 @@ public class GomdoriService {
             // 메인 화면에 정보 뿌리기
             simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
         }else if(MessageDto.MessageType.ACCEPT.equals(messageDto.getType())){ // 도움 수락 할 때
+            // convertAndSendToUser 로도 동작할 수 있긴함
             simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
         }
     }

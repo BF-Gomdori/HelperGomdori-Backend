@@ -45,7 +45,7 @@ public class User {
     private String phone;
 
     @Column(name = "AGE", nullable = false)
-    private Integer age;
+    private String age;
 
     @Column(name = "START_DATE", nullable = false, columnDefinition = "TIMESTAMP")
     private Timestamp startDate;
@@ -71,7 +71,7 @@ public class User {
     @Builder
     public User(String name, String email, String password,
                 String photoLink, String gender, String phone,
-                Integer age, Timestamp startDate, Timestamp modifiedDate,
+                String age, Timestamp startDate, Timestamp modifiedDate,
                 UserRole roleUser) {
         this.username = name;
         this.email = email;

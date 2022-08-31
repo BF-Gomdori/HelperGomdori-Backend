@@ -3,6 +3,7 @@ package bf.multi.server.handler;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.security.JwtTokenProvider;
+import bf.multi.server.service.websocket.FindConnectedUsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @Slf4j
 public class StompHandler implements ChannelInterceptor {
     private final UserRepository userRepository;
+    private final FindConnectedUsersService findConnectedUsersService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
@@ -54,6 +56,7 @@ public class StompHandler implements ChannelInterceptor {
         }
         else if(StompCommand.DISCONNECT.equals(accessor.getCommand())){
             // TODO: 종료할 때(앱이 그냥 종료될 때나 매칭이 되서 연결이 종료되면 그 유저의 핑 정보 없애야 할 듯
+            findConnectedUsersService.disconnectDispose(accessor.getUser().getName());
             String roomId = getRoomId(
                     Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId")
             );

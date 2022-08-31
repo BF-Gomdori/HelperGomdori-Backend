@@ -32,6 +32,15 @@ public class FindConnectedUsersService {
                 .findAllByCompleteIsFalseAndRequestTimeBefore(now);
     }
 
+    // DISCONNECT 됐을 때 helps, requests 처리
+    public void disconnectDispose(String username){
+        // helps랑 requests 찾아서 삭제
+        Helps helps = helpsRepository.findDistinctTopBySuccessIsFalseAndHelper_User_UsernameOrderByAcceptTimeDesc(username);
+        helpsRepository.deleteById(helps.getId());
+        Requests requests = requestsRepository.findDistinctTopByCompleteIsFalseAndHelpee_User_UsernameOrderByRequestTimeDesc(username);
+        requestsRepository.deleteById(requests.getId());
+    }
+
     public List<MessageDto> composeInitData(List<Helps> helpsList, List<Requests> requestsList){
         List<MessageDto> messageDtoList = new ArrayList<>();
         helpsList.forEach(list -> {

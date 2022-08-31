@@ -11,14 +11,14 @@ public class HelpeePingDto {
     private String name;
     private String phone;
     private String gender;
-    private Integer age;
+    private String age;
     private HelpRequestDto helpRequest;
 
     @Builder
 
     public HelpeePingDto(String photoLink, String type,
                          String location, String name,
-                         String phone, String gender, Integer age,
+                         String phone, String gender, String age,
                          HelpRequestDto helpRequestDto) {
         this.photoLink = photoLink;
         this.type = type;

@@ -13,10 +13,10 @@ public class UserSignUpDto {
     private String photoLink;
     private String gender;
     private String phone;
-    private Integer age;
+    private String age;
 
     @Builder
-    public UserSignUpDto(String username, String email, String photoLink, String gender, String phone, Integer age) {
+    public UserSignUpDto(String username, String email, String photoLink, String gender, String phone, String age) {
         this.username = username;
         this.email = email;
         this.photoLink = photoLink;
