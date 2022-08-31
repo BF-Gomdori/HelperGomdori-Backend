@@ -33,7 +33,6 @@ public class BfUserApplication {
 					.gender("남")
 					.phone("010-9134-7564")
 					.age(24)
-					.intro("자기소개")
 					.startDate(new Timestamp(System.currentTimeMillis()))
 					.modifiedDate(new Timestamp(System.currentTimeMillis()))
 					.role(UserRole.ROLE_ADMIN)
