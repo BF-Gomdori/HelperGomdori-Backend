@@ -2,9 +2,8 @@ package bf.multi.server.domain.requests;
 
 import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helps.Helps;
-import bf.multi.server.websocket.domain.MessageDto;
+import bf.multi.server.domain.dto.websocket.MessageDto;
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

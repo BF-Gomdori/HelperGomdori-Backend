@@ -1,4 +1,4 @@
-package bf.multi.server.websocket.handler;
+package bf.multi.server.handler;
 
 import bf.multi.server.domain.user.User;
 import bf.multi.server.domain.user.UserRepository;

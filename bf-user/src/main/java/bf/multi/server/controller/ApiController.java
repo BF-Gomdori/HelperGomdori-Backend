@@ -2,10 +2,10 @@ package bf.multi.server.controller;
 
 import bf.multi.server.domain.helps.HelpsRepository;
 import bf.multi.server.domain.requests.RequestsRepository;
-import bf.multi.server.websocket.domain.HelpeePingDto;
-import bf.multi.server.websocket.domain.HelperPingDto;
-import bf.multi.server.websocket.domain.MatchingDataDto;
-import bf.multi.server.websocket.service.GomdoriService;
+import bf.multi.server.domain.dto.websocket.HelpeePingDto;
+import bf.multi.server.domain.dto.websocket.HelperPingDto;
+import bf.multi.server.domain.dto.websocket.MatchingDataDto;
+import bf.multi.server.service.websocket.GomdoriService;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

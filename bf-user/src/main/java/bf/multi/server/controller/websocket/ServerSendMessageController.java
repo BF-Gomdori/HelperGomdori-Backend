@@ -1,10 +1,10 @@
-package bf.multi.server.websocket.controller;
+package bf.multi.server.controller.websocket;
 
 import bf.multi.server.domain.helps.Helps;
 import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.security.JwtTokenProvider;
-import bf.multi.server.websocket.domain.MessageDto;
-import bf.multi.server.websocket.service.FindConnectedUsersService;
+import bf.multi.server.domain.dto.websocket.MessageDto;
+import bf.multi.server.service.websocket.FindConnectedUsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j

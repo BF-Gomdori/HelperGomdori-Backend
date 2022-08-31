@@ -2,7 +2,7 @@ package bf.multi.server.domain.helps;
 
 import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.domain.requests.Requests;
-import bf.multi.server.websocket.domain.MessageDto;
+import bf.multi.server.domain.dto.websocket.MessageDto;
 import lombok.*;
 
 import javax.persistence.*;

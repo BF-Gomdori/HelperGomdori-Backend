@@ -1,10 +1,10 @@
-package bf.multi.server.websocket.controller;
+package bf.multi.server.controller.websocket;
 
 import bf.multi.server.domain.user.User;
 import bf.multi.server.security.JwtTokenProvider;
 import bf.multi.server.service.UserService;
-import bf.multi.server.websocket.domain.MessageDto;
-import bf.multi.server.websocket.service.GomdoriService;
+import bf.multi.server.domain.dto.websocket.MessageDto;
+import bf.multi.server.service.websocket.GomdoriService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;

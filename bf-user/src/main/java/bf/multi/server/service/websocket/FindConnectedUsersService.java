@@ -1,13 +1,13 @@
-package bf.multi.server.websocket.service;
+package bf.multi.server.service.websocket;
 
 import bf.multi.server.domain.helps.Helps;
 import bf.multi.server.domain.helps.HelpsRepository;
 import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.domain.requests.RequestsRepository;
 import bf.multi.server.security.JwtTokenProvider;
-import bf.multi.server.websocket.domain.HelpRequestDto;
-import bf.multi.server.websocket.domain.Location;
-import bf.multi.server.websocket.domain.MessageDto;
+import bf.multi.server.domain.dto.websocket.HelpRequestDto;
+import bf.multi.server.domain.dto.websocket.Location;
+import bf.multi.server.domain.dto.websocket.MessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

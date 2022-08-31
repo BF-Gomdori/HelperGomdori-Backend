@@ -1,7 +1,6 @@
 package bf.multi.server.config;
 
-import bf.multi.server.websocket.handler.StompHandler;
-import lombok.RequiredArgsConstructor;
+import bf.multi.server.handler.StompHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;

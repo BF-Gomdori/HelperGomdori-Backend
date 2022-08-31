@@ -1,5 +1,6 @@
-package bf.multi.server.websocket.service;
+package bf.multi.server.service.websocket;
 
+import bf.multi.server.domain.dto.websocket.*;
 import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helpee.HelpeeRepository;
 import bf.multi.server.domain.helper.Helper;
@@ -13,7 +14,6 @@ import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.security.JwtTokenProvider;
 import bf.multi.server.service.RequestsService;
 import bf.multi.server.service.UserService;
-import bf.multi.server.websocket.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.context.SecurityContextHolder;
