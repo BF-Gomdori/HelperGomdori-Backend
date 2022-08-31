@@ -34,6 +34,9 @@ public class Helpee {
     @Column(name = "TYPE", length = 45, nullable = false)
     private String type;
 
+    @Column(name = "INTRO")
+    private String intro;
+
     @Column(name = "REQUEST_CNT")
     private Integer requestCount;
 
@@ -47,9 +50,10 @@ public class Helpee {
     private List<Requests> requestsList = new ArrayList<>();
 
     @Builder
-    public Helpee(User user, String type, Integer requestCount, Double averageRate, Integer hearts) {
+    public Helpee(User user, String type, String intro, Integer requestCount, Double averageRate, Integer hearts) {
         this.user = user;
         this.type = type;
+        this.intro = intro;
         this.requestCount = requestCount;
         this.averageRate = averageRate;
         this.hearts = hearts;
