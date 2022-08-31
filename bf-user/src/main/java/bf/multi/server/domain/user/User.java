@@ -47,9 +47,6 @@ public class User {
     @Column(name = "AGE", nullable = false)
     private Integer age;
 
-    @Column(name = "INTRO", nullable = false, columnDefinition = "TEXT")
-    private String intro;
-
     @Column(name = "START_DATE", nullable = false, columnDefinition = "TIMESTAMP")
     private Timestamp startDate;
 
@@ -74,8 +71,8 @@ public class User {
     @Builder
     public User(String name, String email, String password,
                 String photoLink, String gender, String phone,
-                Integer age, String intro, Timestamp startDate,
-                Timestamp modifiedDate, UserRole roleUser) {
+                Integer age, Timestamp startDate, Timestamp modifiedDate,
+                UserRole roleUser) {
         this.username = name;
         this.email = email;
         this.password = password;
@@ -83,7 +80,6 @@ public class User {
         this.gender = gender;
         this.phone = phone;
         this.age = age;
-        this.intro = intro;
         this.startDate = startDate;
         this.modifiedDate = modifiedDate;
         this.role = roleUser;
