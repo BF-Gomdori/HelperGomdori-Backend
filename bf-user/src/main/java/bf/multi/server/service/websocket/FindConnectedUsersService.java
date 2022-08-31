@@ -1,5 +1,7 @@
 package bf.multi.server.service.websocket;
 
+import bf.multi.server.domain.helpee.HelpeeRepository;
+import bf.multi.server.domain.helper.HelperRepository;
 import bf.multi.server.domain.helps.Helps;
 import bf.multi.server.domain.helps.HelpsRepository;
 import bf.multi.server.domain.requests.Requests;
@@ -19,6 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FindConnectedUsersService {
     private final JwtTokenProvider jwtTokenProvider;
+    private final HelperRepository helperRepository;
+    private final HelpeeRepository helpeeRepository;
     private final RequestsRepository requestsRepository;
     private final HelpsRepository helpsRepository;
 
@@ -34,11 +38,16 @@ public class FindConnectedUsersService {
 
     // DISCONNECT 됐을 때 helps, requests 처리
     public void disconnectDispose(String username){
-        // helps랑 requests 찾아서 삭제
-        Helps helps = helpsRepository.findDistinctTopBySuccessIsFalseAndHelper_User_UsernameOrderByAcceptTimeDesc(username);
-        helpsRepository.deleteById(helps.getId());
-        Requests requests = requestsRepository.findDistinctTopByCompleteIsFalseAndHelpee_User_UsernameOrderByRequestTimeDesc(username);
-        requestsRepository.deleteById(requests.getId());
+        // helps랑 requests 찾아서
+        if(helperRepository.findHelperByUser_Username(username).isPresent()){
+            Helps helps = helpsRepository.findDistinctTopBySuccessIsFalseAndHelper_User_UsernameOrderByAcceptTimeDesc(username);
+            helpsRepository.deleteById(helps.getId());
+            return;
+        }else {
+            Requests requests = requestsRepository.findDistinctTopByCompleteIsFalseAndHelpee_User_UsernameOrderByRequestTimeDesc(username);
+            requestsRepository.deleteById(requests.getId());
+            return;
+        }
     }
 
     public List<MessageDto> composeInitData(List<Helps> helpsList, List<Requests> requestsList){

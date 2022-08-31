@@ -64,9 +64,9 @@ public class GomdoriService {
     // 베프가 들어오면 helps 객체 하나 생성
     @Transactional
     public void createHelp(MessageDto messageDto){
-        Helper helper = helperRepository.findHelperByUser_Username(jwtTokenProvider.getUsernameByToken(messageDto.getJwt()));
+        Optional<Helper> helper = helperRepository.findHelperByUser_Username(jwtTokenProvider.getUsernameByToken(messageDto.getJwt()));
         Helps helps = Helps.builder()
-                .helper(helper).requests(null)
+                .helper(helper.get()).requests(null)
                 .x(messageDto.getLocation().getX()).y(messageDto.getLocation().getY())
                 .acceptTime(messageDto.getTime()).finishTime(null)
                 .success(false)
