@@ -14,16 +14,14 @@ public class UserSignUpDto {
     private String gender;
     private String phone;
     private Integer age;
-    private String intro;
 
     @Builder
-    public UserSignUpDto(String username, String email, String photoLink, String gender, String phone, Integer age, String intro) {
+    public UserSignUpDto(String username, String email, String photoLink, String gender, String phone, Integer age) {
         this.username = username;
         this.email = email;
         this.photoLink = photoLink;
         this.gender = gender;
         this.phone = phone;
         this.age = age;
-        this.intro = intro;
     }
 }
