@@ -85,7 +85,6 @@ public class AuthService {
                     .gender(signUpDto.getGender())
                     .phone(signUpDto.getPhone())
                     .age(signUpDto.getAge())
-                    .intro(signUpDto.getIntro())
                     .startDate(new Timestamp(System.currentTimeMillis()))
                     .modifiedDate(new Timestamp(System.currentTimeMillis()))
                     .role(UserRole.ROLE_USER) // 일단은 무조건 USER 권한 주는 걸로

@@ -48,7 +48,6 @@ public class UserController {
                                 .photoLink(user.getPhotoLink())
                                 .gender(user.getGender())
                                 .age(user.getAge())
-                                .intro(user.getIntro())
                                 .build()
                 )
                 .requests(helpee.getRequestsList())

@@ -40,8 +40,9 @@ public class AuthController {
 
     @PostMapping("/signup/helpee")
     public void helpeeSignup(
-            @RequestBody HelpeeSignUpDto helpeeSignUpDto) {
+            @RequestBody HelpeeSignUpDto.SignUpInfo signUpInfo) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        HelpeeSignUpDto helpeeSignUpDto = HelpeeSignUpDto.builder().signUpInfo(signUpInfo).build();
         helpeeSignUpDto.setUser(authService.getUserByPassword(userDetails.getPassword()));
         Helpee helpee = authService.connectHelpee(helpeeSignUpDto);
 

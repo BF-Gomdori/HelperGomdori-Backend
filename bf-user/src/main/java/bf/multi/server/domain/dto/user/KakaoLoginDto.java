@@ -13,15 +13,13 @@ public class KakaoLoginDto {
 
     private String phone;
     private String name;
-    private String intro;
     private Integer age;
 
     @Builder
-    public KakaoLoginDto(String accessToken, String phone, String name, String intro, Integer age) {
+    public KakaoLoginDto(String accessToken, String phone, String name, Integer age) {
         this.accessToken = accessToken;
         this.phone = phone;
         this.name = name;
-        this.intro = intro;
         this.age = age;
     }
 }

@@ -118,7 +118,6 @@ public class KakaoUserService {
                     kakaoUserInfoDto.getGender(),
                     kakaoLoginDto.getPhone(),
                     kakaoLoginDto.getAge(),
-                    kakaoLoginDto.getIntro(),
                     new Timestamp(System.currentTimeMillis()),
                     new Timestamp(System.currentTimeMillis()),
                     UserRole.ROLE_USER
