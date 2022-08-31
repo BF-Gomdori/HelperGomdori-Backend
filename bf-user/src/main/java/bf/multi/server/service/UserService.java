@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -58,16 +58,24 @@ public class UserService {
     }
 
     public List<Requests> loadRequestsListByEncodedEmail(String encodedEmail) {
-        String email = userRepository.findByPassword(encodedEmail).get().getEmail();
+        String email = userRepository.findByPassword(encodedEmail).orElseThrow().getEmail();
         Helpee helpee = helpeeRepository.findByUser_Email(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Helpee not found with email: " + encodedEmail));
         return helpee.getRequestsList();
     }
 
-    public boolean removeHelpeeByEncodedEmail(String encodedEmail) {
-        String email = userRepository.findByPassword(encodedEmail).get().getEmail();
+    public void deleteHelpeeByEncodedEmail(String encodedEmail) {
+        String email = userRepository.findByPassword(encodedEmail).orElseThrow().getEmail();
         helpeeRepository.deleteByUser_Email(email);
+    }
 
-        return true;
+    public void deleteHelperByEncodedEmail(String encodedEmail) {
+        String email = userRepository.findByPassword(encodedEmail).orElseThrow().getEmail();
+        helperRepository.deleteByUser_Email(email);
+    }
+
+    public void deleteUserByEncodedEmail(String encodedEmail) {
+        String email = userRepository.findByPassword(encodedEmail).orElseThrow().getEmail();
+        userRepository.deleteByEmail(email);
     }
 }

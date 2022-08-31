@@ -2,7 +2,6 @@ package bf.multi.server.domain.helper;
 
 import bf.multi.server.domain.helps.Helps;
 import bf.multi.server.domain.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,7 +39,7 @@ public class Helper {
     @Column(name = "HEARTS", nullable = false)
     private Integer hearts;
 
-    @OneToMany(mappedBy = "helper")
+    @OneToMany(mappedBy = "helper", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Helps> helpsList = new ArrayList<>();
 
     @Builder
