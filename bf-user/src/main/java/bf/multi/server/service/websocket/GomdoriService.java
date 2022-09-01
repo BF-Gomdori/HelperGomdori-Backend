@@ -57,16 +57,20 @@ public class GomdoriService {
             simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
         }else if(MessageDto.MessageType.ACCEPT.equals(messageDto.getType())){ // 도움 수락 할 때
             // convertAndSendToUser 로도 동작할 수 있긴함
-            simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
+//            simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
+            simpMessageSendingOperations.convertAndSendToUser(
+                    jwtTokenProvider.getUsernameByToken(messageDto.getHelpRequest().getHelpeeJwt()),
+                    "/map/"+ messageDto.getSub(),
+                    messageDto);
         }
     }
 
     // 베프가 들어오면 helps 객체 하나 생성
     @Transactional
     public void createHelp(MessageDto messageDto){
-        Helper helper = helperRepository.findHelperByUser_Username(jwtTokenProvider.getUsernameByToken(messageDto.getJwt()));
+        Optional<Helper> helper = helperRepository.findHelperByUser_Username(jwtTokenProvider.getUsernameByToken(messageDto.getJwt()));
         Helps helps = Helps.builder()
-                .helper(helper).requests(null)
+                .helper(helper.get()).requests(null).helpsJwt(messageDto.getJwt())
                 .x(messageDto.getLocation().getX()).y(messageDto.getLocation().getY())
                 .acceptTime(messageDto.getTime()).finishTime(null)
                 .success(false)
@@ -83,7 +87,7 @@ public class GomdoriService {
         Helpee helpee = helpeeRepository.findByUser_Username(
                 jwtTokenProvider.getUsernameByToken(messageDto.getHelpRequest().getHelpeeJwt()));
         Requests requests = Requests.builder()
-                .helpee(helpee).complete(false)
+                .helpee(helpee).complete(false).requestsJwt(messageDto.getJwt())
                 .requestType(messageDto.getHelpRequest().getRequestType())
                 .requestDetail(messageDto.getHelpRequest().getRequestDetail())
                 .location(messageDto.getHelpRequest().getDetailLocation())

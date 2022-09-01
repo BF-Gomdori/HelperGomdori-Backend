@@ -28,6 +28,9 @@ public class Requests {
     @JoinColumn(name = "HELPEE_ID", nullable = false)
     private Helpee helpee;
 
+    @Column(name = "REQUESTS_JWT")
+    private String requestsJwt;
+
     @Column(name = "COMPLETE", length = 1, nullable = false)
     private boolean complete;
 
@@ -58,12 +61,13 @@ public class Requests {
     private List<Helps> helpsList = new ArrayList<>();
 
     @Builder
-    public Requests(Helpee helpee, boolean complete,
+    public Requests(Helpee helpee, boolean complete, String requestsJwt,
                     String requestType, String requestDetail,
                     String location, String x, String y,
                     Timestamp requestTime) {
         this.helpee = helpee;
         this.complete = complete;
+        this.requestsJwt = requestsJwt;
         this.requestType = requestType;
         this.requestDetail = requestDetail;
         this.location = location;

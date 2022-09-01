@@ -27,6 +27,9 @@ public class Helps {
     @JoinColumn(name = "HELPER_ID", nullable = false)
     private Helper helper;
 
+    @Column(name = "HELPS_JWT")
+    private String helpsJwt;
+
     @ManyToOne
     @JoinColumn(name = "REQUEST_ID")
     private Requests requests;
@@ -59,7 +62,7 @@ public class Helps {
     private String helpeeMessage;
 
     @Builder
-    public Helps(Helper helper, Requests requests,
+    public Helps(Helper helper, Requests requests, String helpsJwt,
                  String x, String y,
                  Timestamp acceptTime, Timestamp finishTime,
                  boolean success,
@@ -67,6 +70,7 @@ public class Helps {
                  String helperMessage, String helpeeMessage) {
         this.helper = helper;
         this.requests = requests;
+        this.helpsJwt = helpsJwt;
         this.x = x;
         this.y = y;
         this.acceptTime = acceptTime;
