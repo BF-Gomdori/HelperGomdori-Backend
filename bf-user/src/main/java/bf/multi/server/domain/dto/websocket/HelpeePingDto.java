@@ -15,7 +15,6 @@ public class HelpeePingDto {
     private HelpRequestDto helpRequest;
 
     @Builder
-
     public HelpeePingDto(String photoLink, String type,
                          String location, String name,
                          String phone, String gender, String age,

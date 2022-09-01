@@ -2,6 +2,7 @@ package bf.multi.server.domain.dto.websocket;
 
 import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.domain.user.User;
+import bf.multi.server.service.GeoService;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -14,14 +15,16 @@ public class HelperPingDto {
     private String phone;
     private String gender;
     private String age;
+    private String location;
     private HelperInfo helperInfo;
 
-    public HelperPingDto(User user, Helper helper){
+    public HelperPingDto(User user, Helper helper, String location){
         this.name = user.getUsername();
         this.photoLink = user.getPhotoLink();
         this.age = user.getAge();
         this.phone = user.getPhone();
         this.gender = user.getGender();
+        this.location = location;
         this.helperInfo = HelperInfo.builder()
                 .averageRate(helper.getAverageRate())
                 .hearts(helper.getHearts())
