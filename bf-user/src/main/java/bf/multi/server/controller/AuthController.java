@@ -4,13 +4,13 @@ import bf.multi.server.domain.dto.helpee.HelpeeResponseDto;
 import bf.multi.server.domain.dto.helpee.HelpeeSignUpDto;
 import bf.multi.server.domain.dto.helper.HelperResponseDto;
 import bf.multi.server.domain.dto.helper.HelperSignUpDto;
-import bf.multi.server.domain.dto.user.*;
+import bf.multi.server.domain.dto.user.JwtTokenDto;
+import bf.multi.server.domain.dto.user.KakaoLoginDto;
 import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.service.AuthService;
 import bf.multi.server.service.KakaoUserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -51,8 +51,8 @@ public class AuthController {
 
     @Tag(name = "회원 가입")
     @Operation(summary = "Helpee(도움받기)로 등록",
-               description = "Header 설정(value 넣을 때 Beaer 다음에 띄어쓰기 한칸 중요!) : [Authorization]:[Bearer {기본 회원 가입 시 받은 JWT}]" +
-                             "\nBody : type, intro 필요")
+            description = "Header 설정(value 넣을 때 Bearer 다음에 띄어쓰기 한칸 중요!) : [Authorization]:[Bearer {기본 회원 가입 시 받은 JWT}]" +
+                    "\nBody : type, intro 필요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Helpee 등록 성공"),
             @ApiResponse(responseCode = "401", description = "JWT 만료 OR Authorization 설정 에러") })
