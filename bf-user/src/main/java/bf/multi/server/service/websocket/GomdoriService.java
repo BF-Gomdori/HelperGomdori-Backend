@@ -12,6 +12,7 @@ import bf.multi.server.domain.requests.RequestsRepository;
 import bf.multi.server.domain.user.User;
 import bf.multi.server.domain.user.UserRepository;
 import bf.multi.server.security.JwtTokenProvider;
+import bf.multi.server.service.GeoService;
 import bf.multi.server.service.RequestsService;
 import bf.multi.server.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class GomdoriService {
     private final JwtTokenProvider jwtTokenProvider;
     private final FindConnectedUsersService findConnectedUsersService;
     private final UserService userService;
+    private final GeoService geoService;
     private final RequestsService requestsService;
     private final UserRepository userRepository;
     private final HelpeeRepository helpeeRepository;
@@ -90,7 +92,7 @@ public class GomdoriService {
                 .helpee(helpee).complete(false).requestsJwt(messageDto.getJwt())
                 .requestType(messageDto.getHelpRequest().getRequestType())
                 .requestDetail(messageDto.getHelpRequest().getRequestDetail())
-                .location(messageDto.getHelpRequest().getDetailLocation())
+                .location(geoService.reverseGeocoding(messageDto.getLocation().getY(), messageDto.getLocation().getX()))
                 .x(messageDto.getLocation().getX()).y(messageDto.getLocation().getY())
                 .helpee(helpee)
                 .requestTime(messageDto.getTime())
@@ -110,21 +112,23 @@ public class GomdoriService {
                 .age(user.getAge())
                 .gender(user.getGender())
                 .phone(user.getPhone())
-                .location(requests.getLocation())
+                .location(geoService.reverseGeocoding(requests.getY(), requests.getY()))
                 .helpRequestDto(HelpRequestDto.builder()
                         .helpeeJwt(String.valueOf(httpServletRequest.getHeader("Authorization").startsWith("Bearer ")))
-                        .detailLocation(requests.getLocation())
+                        .detailLocation(geoService.reverseGeocoding(requests.getY(), requests.getY()))
                         .requestDetail(requests.getRequestDetail())
                         .requestType(requests.getRequestType())
                         .build())
                 .build();
     }
 
-    public HelperPingDto responseHelperPing(){
+    public HelperPingDto responseHelperPing() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
         Helper helper = userService.loadHelperByEncodedEmail(userDetails.getPassword());
-        return new HelperPingDto(user, helper);
+        Helps helps = helpsRepository.findDistinctTopBySuccessIsFalseAndHelper_User_UsernameOrderByAcceptTimeDesc(user.getUsername());
+        String location = geoService.reverseGeocoding(helps.getY(), helps.getX());
+        return new HelperPingDto(user, helper, location);
     }
 
     public MatchingDataDto generateMatchingData(String token1, String token2){
