@@ -55,8 +55,7 @@ public class FindConnectedUsersService {
         helpsList.forEach(list -> {
             MessageDto messageDto = MessageDto.builder()
                     .type(MessageDto.MessageType.ENTER).sub("main")
-                    // TODO: JWT 설정 어케할까..
-                    .jwt("jwt")
+                    .jwt(list.getHelpsJwt())
                     .location(Location.builder().x(list.getX()).y(list.getY()).build())
                     .helpRequest(null).time(list.getAcceptTime())
                     .build();
@@ -65,12 +64,10 @@ public class FindConnectedUsersService {
         requestsList.forEach(list -> {
             MessageDto messageDto = MessageDto.builder()
                     .type(MessageDto.MessageType.HELP).sub("main").time(list.getRequestTime())
-                    // TODO: JWT 설정 어케할까..
-                    .jwt("jwt")
+                    .jwt(list.getRequestsJwt())
                     .location(Location.builder().x(list.getX()).y(list.getY()).build())
                     .helpRequest(HelpRequestDto.builder()
-                            // TODO: JWT 설정 어케할까..
-                            .helpeeJwt("helpeeJwt")
+                            .helpeeJwt(list.getRequestsJwt())
                             .requestType(list.getRequestType()).requestDetail(list.getRequestDetail())
                             .detailLocation(list.getLocation())
                             .build())
