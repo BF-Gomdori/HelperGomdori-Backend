@@ -45,9 +45,11 @@ public class ServerSendMessageController {
                 .loadHelpsBeforeConnectedUser(now);
         List<Requests> requestsList = findConnectedUsersService
                 .loadRequestsBeforeConnectedUser(now);
-        List<MessageDto> messageDtos = findConnectedUsersService.composeInitData(helpsList, requestsList);
 
-        this.template.convertAndSendToUser(username,"/map/main",  messageDtos);
+        List<MessageDto> messsageDtos = findConnectedUsersService.composeInitData(helpsList, requestsList);
+        messsageDtos.forEach(list -> {
+            this.template.convertAndSendToUser(username,"/map/main", list);
+        });
     }
 
 }
