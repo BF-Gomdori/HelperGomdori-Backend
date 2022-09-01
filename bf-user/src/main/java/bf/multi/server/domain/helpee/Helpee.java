@@ -2,7 +2,6 @@ package bf.multi.server.domain.helpee;
 
 import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.domain.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,7 +45,7 @@ public class Helpee {
     @Column(name = "HEARTS", nullable = false)
     private Integer hearts;
 
-    @OneToMany(mappedBy = "helpee")
+    @OneToMany(mappedBy = "helpee", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Requests> requestsList = new ArrayList<>();
 
     @Builder

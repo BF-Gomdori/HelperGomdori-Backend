@@ -1,10 +1,5 @@
 package bf.multi.server.domain.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-
 import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helper.Helper;
 import lombok.*;
@@ -57,10 +52,10 @@ public class User {
     @Column(name = "ROLE", nullable = false)
     private UserRole role;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Helper helper;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Helpee helpee;
 
     @PrePersist

@@ -57,7 +57,38 @@ public class UserController {
     @DeleteMapping("/helpee")
     public Boolean helpeeDelete() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        userService.removeHelpeeByEncodedEmail(userDetails.getPassword());
+
+        try {
+            userService.deleteHelpeeByEncodedEmail(userDetails.getPassword());
+        } catch (Exception E) {
+            throw new RuntimeException("Error in deletion");
+        }
+
+        return true;
+    }
+
+    @DeleteMapping("/helper")
+    public Boolean helperDelete() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        try {
+            userService.deleteHelperByEncodedEmail(userDetails.getPassword());
+        } catch (Exception E) {
+            throw new RuntimeException("Error in deletion");
+        }
+
+        return true;
+    }
+
+    @DeleteMapping("/user")
+    public Boolean userDelete() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        try {
+            userService.deleteUserByEncodedEmail(userDetails.getPassword());
+        } catch (Exception E) {
+            throw new RuntimeException("Error in deletion");
+        }
 
         return true;
     }
