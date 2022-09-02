@@ -27,9 +27,8 @@ public class GeoService {
      * &output=json
      * &orders=roadaddr
      */
-    public String reverseGeocoding(String x, String y) {
+    public String reverseGeocoding(String y, String x) {
         String location = "";
-//        String location = "";
         try {
             String apiURL = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc"
                     + "?request=coordsToaddr"
