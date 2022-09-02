@@ -20,6 +20,8 @@ public interface HelpsRepository extends JpaRepository<Helps, Long> {
     Helps findDistinctTopBySuccessIsFalseAndHelper_User_UsernameOrderByAcceptTimeDesc(String username);
     Helps findDistinctFirstByHelperOrderByAcceptTimeDesc(Optional<Helper> helper);
 
+    Helps findDistinctFirstBySuccessIsTrueAndHelperOrderByAcceptTimeDesc(Optional<Helper> helper);
+
     List<Helps> findAllBySuccessIsFalseAndAcceptTimeBefore(Timestamp timestamp);
 
     void deleteAllByHelper_User_Email(String email);

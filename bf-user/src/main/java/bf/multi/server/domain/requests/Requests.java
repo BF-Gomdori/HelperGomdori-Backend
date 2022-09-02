@@ -47,10 +47,10 @@ public class Requests {
     private String location;
 
     @Column(name = "X")
-    private String x;
+    private Double x;
 
     @Column(name = "Y")
-    private String y;
+    private Double y;
 
     @Column(name = "REQUEST_TIME", columnDefinition = "TIMESTAMP")
     private Timestamp requestTime;
@@ -66,7 +66,7 @@ public class Requests {
     @Builder
     public Requests(Helpee helpee, boolean complete, String requestsJwt,
                     String requestType, String requestDetail,
-                    String location, String x, String y,
+                    String location, Double x, Double y,
                     Timestamp requestTime) {
         this.helpee = helpee;
         this.complete = complete;
