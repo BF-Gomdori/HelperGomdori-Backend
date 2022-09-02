@@ -22,4 +22,5 @@ public interface HelpsRepository extends JpaRepository<Helps, Long> {
 
     List<Helps> findAllBySuccessIsFalseAndAcceptTimeBefore(Timestamp timestamp);
 
+    void deleteAllByHelper_User_Email(String email);
 }
