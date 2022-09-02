@@ -10,11 +10,19 @@ import java.util.Optional;
 public interface RequestsRepository extends JpaRepository<Requests, Long> {
     List<Requests> findAllByHelpee_User_Id(Long id);
 
-//    List<Requests> findAllByHelpee_User_Email(String email);
+    //    List<Requests> findAllByHelpee_User_Email(String email);
     Optional<Requests> findAllByHelpee_User_Email(String email);
+
     Requests findDistinctFirstByHelpeeAndCompleteIsFalse(Helpee helpee);
+
     Requests findDistinctTopByHelpeeOrderByRequestTimeDesc(Helpee helpee);
+
+    Requests findDistinctTopByCompleteIsTrueAndHelpeeOrderByRequestTimeDesc(Helpee helpee);
+
+    Requests findDistinctTopByCompleteIsFalseAndHelpeeOrderByRequestTimeDesc(Helpee helpee);
+
     List<Requests> findAllByCompleteIsFalse();
+
     List<Requests> findAllByCompleteIsFalseAndRequestTimeBefore(Timestamp timestamp);
 
     void deleteByHelpee_User_Email(String email);

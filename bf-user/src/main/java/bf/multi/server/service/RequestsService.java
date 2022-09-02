@@ -15,6 +15,10 @@ public class RequestsService {
     private final RequestsRepository requestsRepository;
 
     public Requests loadRecentByHelpee(Helpee helpee) {
-        return requestsRepository.findDistinctTopByHelpeeOrderByRequestTimeDesc(helpee);
+        try {
+            return requestsRepository.findDistinctTopByCompleteIsFalseAndHelpeeOrderByRequestTimeDesc(helpee);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
