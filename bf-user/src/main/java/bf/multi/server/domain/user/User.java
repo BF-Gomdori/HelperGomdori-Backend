@@ -48,6 +48,9 @@ public class User {
     @Column(name = "MODIFIED_DATE", nullable = false, columnDefinition = "TIMESTAMP")
     private Timestamp modifiedDate;
 
+    @Column(name = "FCM_TOKEN", nullable = false, columnDefinition = "TEXT")
+    private String FCMToken;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE", nullable = false)
     private UserRole role;
