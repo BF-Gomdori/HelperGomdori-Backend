@@ -4,6 +4,7 @@ import bf.multi.server.domain.dto.helpee.HelpeeProfileResponseDto;
 import bf.multi.server.domain.dto.user.UserProfileResponseDto;
 import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.user.User;
+import bf.multi.server.service.RequestsService;
 import bf.multi.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+
+    private final RequestsService requestsService;
 
     @GetMapping("/self")
     public User userSelfDetail() {
@@ -86,6 +89,19 @@ public class UserController {
 
         try {
             userService.deleteUserByEncodedEmail(userDetails.getPassword());
+        } catch (Exception E) {
+            throw new RuntimeException("Error in deletion");
+        }
+
+        return true;
+    }
+
+    @DeleteMapping("/user")
+    public Boolean requestsDelete() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        try {
+            requestsService.deleteRequestsByEncodedEmail(userDetails.getPassword());
         } catch (Exception E) {
             throw new RuntimeException("Error in deletion");
         }
