@@ -23,8 +23,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry
                 .enableSimpleBroker("/map")
                 // /help는 1:1 도움 요청, /main은 1:N 메인 화면에 베:프 위치 보냄
-                        .setTaskScheduler(taskScheduler())
-                                .setHeartbeatValue(new long[] {3000L, 3000L});
+                .setTaskScheduler(taskScheduler())
+                .setHeartbeatValue(new long[]{300000L, 300000L});
         registry
                 .setApplicationDestinationPrefixes("/gom-dori"); // /gom-dori는 메시지 보낼 때
     }
