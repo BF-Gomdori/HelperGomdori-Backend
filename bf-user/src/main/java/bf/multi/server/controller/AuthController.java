@@ -38,11 +38,11 @@ public class AuthController {
     private final AuthService authService;
 
     @Tag(name = "회원 가입")
-    @Operation(summary = "기본 회원가입 및 로그인 처리", description = "카카오 access_token 및 기타 정보를 받아서 JWT 발행")
+    @Operation(summary = "기본 회원가입 및 로그인 처리", description = "카카오 access_token, FCMToken 및 기타 정보를 받아서 JWT 발행")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User 등록 및 로그인 성공", content = @Content(schema = @Schema(implementation = JwtTokenDto.class))),
             @ApiResponse(responseCode = "401", description = "카카오 access_token 만료"),
-            @ApiResponse(responseCode = "500", description = "이미 회원 가입되어 있음"), })
+            @ApiResponse(responseCode = "500", description = "이미 회원 가입되어 있음"),})
     @PostMapping("/barrierfree")
     public JwtTokenDto bfRegister(@RequestBody KakaoLoginDto kakaoLoginDto, HttpServletResponse response)
             throws JsonProcessingException {

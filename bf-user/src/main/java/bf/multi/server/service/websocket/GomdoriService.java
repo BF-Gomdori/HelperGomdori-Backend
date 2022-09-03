@@ -15,7 +15,9 @@ import bf.multi.server.security.JwtTokenProvider;
 import bf.multi.server.service.GeoService;
 import bf.multi.server.service.RequestsService;
 import bf.multi.server.service.UserService;
+import bf.multi.server.service.firebase.FCMService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -33,6 +36,7 @@ import java.util.Optional;
 public class GomdoriService {
     private final JwtTokenProvider jwtTokenProvider;
     private final FindConnectedUsersService findConnectedUsersService;
+    private final FCMService fcmService;
     private final UserService userService;
     private final GeoService geoService;
     private final RequestsService requestsService;
@@ -43,7 +47,9 @@ public class GomdoriService {
     private final HelpsRepository helpsRepository;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
 
+
     // 현재 자기 위치 정보 전송
+    @SneakyThrows
     public void sendMessage(MessageDto messageDto){ // 메세지 타입에 따라 동작 구분
         Timestamp now = new Timestamp(System.currentTimeMillis());
         messageDto.setTime(now);
@@ -59,12 +65,20 @@ public class GomdoriService {
             createRequests(messageDto); // request default 생성
             // 메인 화면에 정보 뿌리기
             simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
-        }else if(MessageDto.MessageType.ACCEPT.equals(messageDto.getType())){ // 도움 수락 할 때
-            // convertAndSendToUser 로도 동작할 수 있긴함
-//            simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
+        }else if(MessageDto.MessageType.ACCEPT.equals(messageDto.getType())) { // 도움 수락 할 때
+            // FCM 메세지 로직
+            Optional<User> user = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(messageDto.getHelpRequest().getHelpeeJwt()));
+            fcmService.sendMessageTo(user.get().getFCMToken(), user.get().getUsername() + " 님이 도움 요청을 수락했어요", "빨리와라");
+            // STOMP 메세지 로직
+            List<MessageDto> messageDtoList = findConnectedUsersService.deleteAcceptPings(
+                    messageDto.getJwt(),
+                    messageDto.getHelpRequest().getHelpeeJwt());
+            messageDtoList.forEach(list -> {
+                simpMessageSendingOperations.convertAndSend("/map/main", list);
+            });
             simpMessageSendingOperations.convertAndSendToUser(
                     jwtTokenProvider.getUsernameByToken(messageDto.getHelpRequest().getHelpeeJwt()),
-                    "/map/"+ messageDto.getSub(),
+                    "/map/" + messageDto.getSub(),
                     messageDto);
         }
     }

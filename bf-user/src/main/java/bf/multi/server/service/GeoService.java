@@ -33,7 +33,7 @@ public class GeoService {
             String apiURL = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc"
                     + "?request=coordsToaddr"
                     + "&coords=" + y.toString() + "," + x.toString()
-                    + "&sourcecrs=epsg:4326&output=json&orders=roadaddr";
+                    + "&sourcecrs=epsg:4326&output=json&orders=addr,roadaddr";
 
             // HTTP Header 생성
             HttpHeaders headers = new HttpHeaders();
@@ -53,12 +53,19 @@ public class GeoService {
             String responseBody = response.getBody();
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseBody);
-
-            location += jsonNode.get("results").get(0).get("region").get("area1").get("name").asText() + " ";
-            location += jsonNode.get("results").get(0).get("region").get("area2").get("name").asText() + " ";
-            location += jsonNode.get("results").get(0).get("land").get("name").asText() + " ";
-            location += jsonNode.get("results").get(0).get("land").get("number1").asText() + " ";
-            location += jsonNode.get("results").get(0).get("land").get("number2").asText();
+            if (!jsonNode.get("results").has(1)) { // roadaddr 없으면 지번주소로 가져오기
+                location += jsonNode.get("results").get(0).get("region").get("area1").get("name").asText() + " ";
+                location += jsonNode.get("results").get(0).get("region").get("area2").get("name").asText() + " ";
+                location += jsonNode.get("results").get(0).get("region").get("area3").get("name").asText() + " ";
+                location += jsonNode.get("results").get(0).get("land").get("number1").asText() + " ";
+                location += jsonNode.get("results").get(0).get("land").get("number2").asText();
+            } else {
+                location += jsonNode.get("results").get(0).get("region").get("area1").get("name").asText() + " ";
+                location += jsonNode.get("results").get(0).get("region").get("area2").get("name").asText() + " ";
+                location += jsonNode.get("results").get(0).get("land").get("name").asText() + " ";
+                location += jsonNode.get("results").get(0).get("land").get("number1").asText() + " ";
+                location += jsonNode.get("results").get(0).get("land").get("number2").asText();
+            }
             return location;
         } catch (Exception e) {
             System.out.println(e);
