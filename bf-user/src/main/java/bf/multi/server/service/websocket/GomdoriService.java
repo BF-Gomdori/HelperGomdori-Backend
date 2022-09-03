@@ -68,7 +68,10 @@ public class GomdoriService {
         }else if(MessageDto.MessageType.ACCEPT.equals(messageDto.getType())) { // 도움 수락 할 때
             // FCM 메세지 로직
             Optional<User> user = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(messageDto.getHelpRequest().getHelpeeJwt()));
-            fcmService.sendMessageTo(user.get().getFCMToken(), user.get().getUsername() + " 님이 도움 요청을 수락했어요", "빨리와라");
+            fcmService.sendMessageTo(
+                    user.get().getFCMToken(),
+                    "[ " + user.get().getUsername() + " ] 님의 도움 요청이 수락되었습니다!!",
+                    "[ " + user.get().getUsername() + " ] 님이 도움 요청을 수락했어요");
             // STOMP 메세지 로직
             List<MessageDto> messageDtoList = findConnectedUsersService.deleteAcceptPings(
                     messageDto.getJwt(),
