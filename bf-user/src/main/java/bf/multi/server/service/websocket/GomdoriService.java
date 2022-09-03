@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -67,6 +68,12 @@ public class GomdoriService {
             Optional<User> user = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(messageDto.getHelpRequest().getHelpeeJwt()));
             fcmService.sendMessageTo(user.get().getFCMToken(), user.get().getUsername() + " 님이 도움 요청을 수락했어요", "빨리와라");
             // STOMP 메세지 로직
+            List<MessageDto> messageDtoList = findConnectedUsersService.deleteAcceptPings(
+                    messageDto.getJwt(),
+                    messageDto.getHelpRequest().getHelpeeJwt());
+            messageDtoList.forEach(list -> {
+                simpMessageSendingOperations.convertAndSend("/map/main", list);
+            });
             simpMessageSendingOperations.convertAndSendToUser(
                     jwtTokenProvider.getUsernameByToken(messageDto.getHelpRequest().getHelpeeJwt()),
                     "/map/" + messageDto.getSub(),

@@ -1,5 +1,8 @@
 package bf.multi.server.service.websocket;
 
+import bf.multi.server.domain.dto.websocket.HelpRequestDto;
+import bf.multi.server.domain.dto.websocket.Location;
+import bf.multi.server.domain.dto.websocket.MessageDto;
 import bf.multi.server.domain.helpee.HelpeeRepository;
 import bf.multi.server.domain.helper.HelperRepository;
 import bf.multi.server.domain.helps.Helps;
@@ -7,9 +10,6 @@ import bf.multi.server.domain.helps.HelpsRepository;
 import bf.multi.server.domain.requests.Requests;
 import bf.multi.server.domain.requests.RequestsRepository;
 import bf.multi.server.security.JwtTokenProvider;
-import bf.multi.server.domain.dto.websocket.HelpRequestDto;
-import bf.multi.server.domain.dto.websocket.Location;
-import bf.multi.server.domain.dto.websocket.MessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +74,12 @@ public class FindConnectedUsersService {
                     .build();
             messageDtoList.add(messageDto);
         });
+        return messageDtoList;
+    }
+
+    public List<MessageDto> deleteAcceptPings(String helperJwt, String helpeeJwt) {
+        List<MessageDto> messageDtoList = new ArrayList<>();
+//        String helperName =
         return messageDtoList;
     }
 }
