@@ -1,7 +1,5 @@
 package bf.multi.server.domain.dto.websocket;
 
-import bf.multi.server.domain.helps.Helps;
-import bf.multi.server.domain.requests.Requests;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,12 +13,12 @@ public class MatchingDataDto {
 
     @Data
     @NoArgsConstructor
-    public static class HelperLocation{
-        private String helperX;
-        private String helperY;
+    public static class HelperLocation {
+        private Double helperX;
+        private Double helperY;
 
         @Builder
-        public HelperLocation(String helperX, String helperY) {
+        public HelperLocation(Double helperX, Double helperY) {
             this.helperX = helperX;
             this.helperY = helperY;
         }
@@ -28,12 +26,12 @@ public class MatchingDataDto {
 
     @Data
     @NoArgsConstructor
-    public static class HelpeeLocation{
-        private String helpeeX;
-        private String helpeeY;
+    public static class HelpeeLocation {
+        private Double helpeeX;
+        private Double helpeeY;
 
         @Builder
-        public HelpeeLocation(String helpeeX, String helpeeY) {
+        public HelpeeLocation(Double helpeeX, Double helpeeY) {
             this.helpeeX = helpeeX;
             this.helpeeY = helpeeY;
         }

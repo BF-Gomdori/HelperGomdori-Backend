@@ -27,12 +27,12 @@ public class GeoService {
      * &output=json
      * &orders=roadaddr
      */
-    public String reverseGeocoding(String y, String x) {
+    public String reverseGeocoding(Double y, Double x) {
         String location = "";
         try {
             String apiURL = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc"
                     + "?request=coordsToaddr"
-                    + "&coords=" + y + "," + x
+                    + "&coords=" + y.toString() + "," + x.toString()
                     + "&sourcecrs=epsg:4326&output=json&orders=roadaddr";
 
             // HTTP Header 생성
