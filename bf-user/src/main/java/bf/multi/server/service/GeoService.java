@@ -59,12 +59,12 @@ public class GeoService {
                 location += jsonNode.get("results").get(0).get("region").get("area3").get("name").asText() + " ";
                 location += jsonNode.get("results").get(0).get("land").get("number1").asText() + " ";
                 location += jsonNode.get("results").get(0).get("land").get("number2").asText();
-            } else {
-                location += jsonNode.get("results").get(0).get("region").get("area1").get("name").asText() + " ";
-                location += jsonNode.get("results").get(0).get("region").get("area2").get("name").asText() + " ";
-                location += jsonNode.get("results").get(0).get("land").get("name").asText() + " ";
-                location += jsonNode.get("results").get(0).get("land").get("number1").asText() + " ";
-                location += jsonNode.get("results").get(0).get("land").get("number2").asText();
+            } else { // addr, roadaddr 둘 다 있을 때 -> 도로명 주소로 가져옴
+                location += jsonNode.get("results").get(1).get("region").get("area1").get("name").asText() + " ";
+                location += jsonNode.get("results").get(1).get("region").get("area2").get("name").asText() + " ";
+                location += jsonNode.get("results").get(1).get("land").get("name").asText() + " ";
+                location += jsonNode.get("results").get(1).get("land").get("number1").asText() + " ";
+                location += jsonNode.get("results").get(1).get("land").get("number2").asText();
             }
             return location;
         } catch (Exception e) {
