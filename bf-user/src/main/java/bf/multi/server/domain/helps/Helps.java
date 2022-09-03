@@ -1,9 +1,12 @@
 package bf.multi.server.domain.helps;
 
+import bf.multi.server.domain.dto.websocket.MessageDto;
 import bf.multi.server.domain.helper.Helper;
 import bf.multi.server.domain.requests.Requests;
-import bf.multi.server.domain.dto.websocket.MessageDto;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -35,10 +38,10 @@ public class Helps {
     private Requests requests;
 
     @Column(name = "X")
-    private String x;
+    private Double x;
 
     @Column(name = "Y")
-    private String y;
+    private Double y;
 
     @Column(name = "ACCEPT_TIME", columnDefinition = "TIMESTAMP")
     private Timestamp acceptTime;
@@ -63,7 +66,7 @@ public class Helps {
 
     @Builder
     public Helps(Helper helper, Requests requests, String helpsJwt,
-                 String x, String y,
+                 Double x, Double y,
                  Timestamp acceptTime, Timestamp finishTime,
                  boolean success,
                  Double helperRate, Double helpeeRate,

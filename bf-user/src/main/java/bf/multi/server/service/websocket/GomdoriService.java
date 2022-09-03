@@ -18,6 +18,7 @@ import bf.multi.server.service.UserService;
 import bf.multi.server.service.firebase.FCMService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +30,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GomdoriService {
@@ -114,58 +116,73 @@ public class GomdoriService {
         requestsRepository.save(requests);
     }
 
-    public HelpeePingDto responseHelpeePing(HttpServletRequest httpServletRequest){
+    public HelpeePingDto responseHelpeePing(HttpServletRequest httpServletRequest) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
         Helpee helpee = userService.loadHelpeeByEncodedEmail(userDetails.getPassword());
         Requests requests = requestsService.loadRecentByHelpee(helpee);
-        return HelpeePingDto.builder()
-                .name(user.getUsername())
-                .photoLink(user.getPhotoLink())
-                .type(helpee.getType())
-                .age(user.getAge())
-                .gender(user.getGender())
-                .phone(user.getPhone())
-                .location(geoService.reverseGeocoding(requests.getY(), requests.getX()))
-                .helpRequestDto(HelpRequestDto.builder()
-                        .helpeeJwt(String.valueOf(httpServletRequest.getHeader("Authorization").startsWith("Bearer ")))
-                        .detailLocation(geoService.reverseGeocoding(requests.getY(), requests.getX()))
-                        .requestDetail(requests.getRequestDetail())
-                        .requestType(requests.getRequestType())
-                        .build())
-                .build();
+        try {
+            return HelpeePingDto.builder()
+                    .name(user.getUsername())
+                    .photoLink(user.getPhotoLink())
+                    .type(helpee.getType())
+                    .age(user.getAge())
+                    .gender(user.getGender())
+                    .phone(user.getPhone())
+                    .location(geoService.reverseGeocoding(requests.getY(), requests.getX()))
+                    .helpRequestDto(HelpRequestDto.builder()
+                            .helpeeJwt(requests.getRequestsJwt())
+                            .detailLocation(geoService.reverseGeocoding(requests.getY(), requests.getX()))
+                            .requestDetail(requests.getRequestDetail())
+                            .requestType(requests.getRequestType())
+                            .build())
+                    .build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
     }
 
     public HelperPingDto responseHelperPing() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
-        Helper helper = userService.loadHelperByEncodedEmail(userDetails.getPassword());
-        Helps helps = helpsRepository.findDistinctTopBySuccessIsFalseAndHelper_User_UsernameOrderByAcceptTimeDesc(user.getUsername());
-        String location = geoService.reverseGeocoding(helps.getY(), helps.getX());
-        return new HelperPingDto(user, helper, location);
+        try {
+            Helper helper = userService.loadHelperByEncodedEmail(userDetails.getPassword());
+            Helps helps = helpsRepository.findDistinctTopBySuccessIsFalseAndHelper_User_UsernameOrderByAcceptTimeDesc(user.getUsername());
+            String location = geoService.reverseGeocoding(helps.getY(), helps.getX());
+            return new HelperPingDto(user, helper, location);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
+        }
     }
 
-    public MatchingDataDto generateMatchingData(String token1, String token2){
-        Optional<User> user1 = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(token1));
-        Optional<User> user2 = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(token2));
-        if(helperRepository.findHelperByUser_Email(user1.get().getEmail()).isPresent()){
-            Optional<Helper> helper = helperRepository.findHelperByUser_Email(user1.get().getEmail());
-            Helps helps = helpsRepository.findDistinctFirstByHelperOrderByAcceptTimeDesc(helper);
-            Helpee helpee = helpeeRepository.findByUser_Username(user2.get().getUsername());
-            Requests requests = requestsRepository.findDistinctTopByHelpeeOrderByRequestTimeDesc(helpee);
+    public MatchingDataDto generateMatchingData(String token1, String token2) {
+        try {
+            Optional<User> user1 = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(token1));
+            Optional<User> user2 = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(token2));
+            if (helperRepository.findHelperByUser_Email(user1.get().getEmail()).isPresent()) {
+                Optional<Helper> helper = helperRepository.findHelperByUser_Email(user1.get().getEmail());
+                Helps helps = helpsRepository.findDistinctFirstBySuccessIsTrueAndHelperOrderByAcceptTimeDesc(helper);
+                Helpee helpee = helpeeRepository.findByUser_Username(user2.get().getUsername());
+                Requests requests = requestsRepository.findDistinctTopByCompleteIsTrueAndHelpeeOrderByRequestTimeDesc(helpee);
+                return MatchingDataDto.builder()
+                        .helperLocation(MatchingDataDto.HelperLocation.builder().helperX(helps.getX()).helperY(helps.getY()).build())
+                        .helpeeLocation(MatchingDataDto.HelpeeLocation.builder().helpeeX(requests.getX()).helpeeY(requests.getY()).build())
+                        .build();
+            }
+            Optional<Helper> helper = helperRepository.findHelperByUser_Email(user2.get().getEmail());
+            Helps helps = helpsRepository.findDistinctFirstBySuccessIsTrueAndHelperOrderByAcceptTimeDesc(helper);
+            Helpee helpee = helpeeRepository.findByUser_Username(user1.get().getUsername());
+            Requests requests = requestsRepository.findDistinctTopByCompleteIsTrueAndHelpeeOrderByRequestTimeDesc(helpee);
             return MatchingDataDto.builder()
                     .helperLocation(MatchingDataDto.HelperLocation.builder().helperX(helps.getX()).helperY(helps.getY()).build())
                     .helpeeLocation(MatchingDataDto.HelpeeLocation.builder().helpeeX(requests.getX()).helpeeY(requests.getY()).build())
                     .build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return null;
         }
-        Optional<Helper> helper = helperRepository.findHelperByUser_Email(user2.get().getEmail());
-        Helps helps = helpsRepository.findDistinctFirstByHelperOrderByAcceptTimeDesc(helper);
-        Helpee helpee = helpeeRepository.findByUser_Username(user1.get().getUsername());
-        Requests requests = requestsRepository.findDistinctTopByHelpeeOrderByRequestTimeDesc(helpee);
-        return MatchingDataDto.builder()
-                .helperLocation(MatchingDataDto.HelperLocation.builder().helperX(helps.getX()).helperY(helps.getY()).build())
-                .helpeeLocation(MatchingDataDto.HelpeeLocation.builder().helpeeX(requests.getX()).helpeeY(requests.getY()).build())
-                .build();
     }
 
     // accept Message 왔을 때 helps, requests 업데이트

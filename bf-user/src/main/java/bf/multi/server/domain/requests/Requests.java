@@ -1,9 +1,12 @@
 package bf.multi.server.domain.requests;
 
+import bf.multi.server.domain.dto.websocket.MessageDto;
 import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helps.Helps;
-import bf.multi.server.domain.dto.websocket.MessageDto;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -44,10 +47,10 @@ public class Requests {
     private String location;
 
     @Column(name = "X")
-    private String x;
+    private Double x;
 
     @Column(name = "Y")
-    private String y;
+    private Double y;
 
     @Column(name = "REQUEST_TIME", columnDefinition = "TIMESTAMP")
     private Timestamp requestTime;
@@ -57,13 +60,13 @@ public class Requests {
         helpee.getRequestsList().add(this);
     }
 
-    @OneToMany(mappedBy = "requests")
+    @OneToMany(mappedBy = "requests", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Helps> helpsList = new ArrayList<>();
 
     @Builder
     public Requests(Helpee helpee, boolean complete, String requestsJwt,
                     String requestType, String requestDetail,
-                    String location, String x, String y,
+                    String location, Double x, Double y,
                     Timestamp requestTime) {
         this.helpee = helpee;
         this.complete = complete;
