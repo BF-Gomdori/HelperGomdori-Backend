@@ -26,7 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,11 +62,29 @@ public class GomdoriService {
             simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
         }else if(MessageDto.MessageType.QUIT.equals(messageDto.getType())){ // 위치 정보 표시 안 할 때
             // TODO: 뭐해줘야되지?
-        }else if(MessageDto.MessageType.HELP.equals(messageDto.getType())){ // 도움 요청 할 때
+        }else if(MessageDto.MessageType.HELP.equals(messageDto.getType())) { // 도움 요청 할 때
             // 요청사항 저장 및 + 도움 요청 메세지 전송
             createRequests(messageDto); // request default 생성
+            // 베:프 들에게 FCM 메세지 뿌리기
+            List<Helps> helpsList = helpsRepository.findAllBySuccessIsFalse();
+            List<User> userList = new ArrayList<>();
+            helpsList.forEach(list -> {
+                userList.add(userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(list.getHelpsJwt())).get());
+            });
+            userList.forEach(list -> {
+                try {
+                    fcmService.sendMessageTo(
+                            list.getFCMToken(),
+                            "[ " + list.getUsername() + " ] 님의 도움을 요청했습니다!!",
+                            "[ " + list.getUsername() + " ] 님의 현재 상황\n\n" +
+                                    "<요청사항> " + messageDto.getHelpRequest().getRequestType() + "\n" +
+                                    "<세부요청사항> " + messageDto.getHelpRequest().getRequestDetail());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             // 메인 화면에 정보 뿌리기
-            simpMessageSendingOperations.convertAndSend("/map/"+ messageDto.getSub(), messageDto);
+            simpMessageSendingOperations.convertAndSend("/map/" + messageDto.getSub(), messageDto);
         }else if(MessageDto.MessageType.ACCEPT.equals(messageDto.getType())) { // 도움 수락 할 때
             // FCM 메세지 로직
             Optional<User> user = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(messageDto.getHelpRequest().getHelpeeJwt()));
