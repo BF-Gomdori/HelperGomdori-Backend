@@ -79,7 +79,24 @@ public class FindConnectedUsersService {
 
     public List<MessageDto> deleteAcceptPings(String helperJwt, String helpeeJwt) {
         List<MessageDto> messageDtoList = new ArrayList<>();
-//        String helperName =
+        Helps helps = helpsRepository.
+                findDistinctTopBySuccessIsTrueAndHelper_User_UsernameOrderByAcceptTimeDesc
+                        (jwtTokenProvider.getUsernameByToken(helperJwt));
+        messageDtoList.add(MessageDto.builder()
+                .type(MessageDto.MessageType.QUIT).sub("main")
+                .jwt(helps.getHelpsJwt()).time(helps.getAcceptTime())
+                .location(Location.builder().x(helps.getX()).y(helps.getY()).build())
+                .helpRequest(null)
+                .build());
+        Requests requests = requestsRepository
+                .findDistinctTopByCompleteIsTrueAndHelpee_User_UsernameOrderByRequestTimeDesc
+                        (jwtTokenProvider.getUsernameByToken(helpeeJwt));
+        messageDtoList.add(MessageDto.builder()
+                .type(MessageDto.MessageType.QUIT).sub("main").time(requests.getRequestTime())
+                .jwt(requests.getRequestsJwt())
+                .location(Location.builder().x(requests.getX()).y(requests.getY()).build())
+                .helpRequest(null)
+                .build());
         return messageDtoList;
     }
 }
