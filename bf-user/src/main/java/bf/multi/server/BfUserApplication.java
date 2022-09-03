@@ -1,8 +1,8 @@
 package bf.multi.server;
 
 import bf.multi.server.domain.user.User;
-import bf.multi.server.domain.user.UserRole;
 import bf.multi.server.domain.user.UserRepository;
+import bf.multi.server.domain.user.UserRole;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +35,7 @@ public class BfUserApplication {
 					.age("20대 중반")
 					.startDate(new Timestamp(System.currentTimeMillis()))
 					.modifiedDate(new Timestamp(System.currentTimeMillis()))
+					.FCMToken("FCMtoken")
 					.role(UserRole.ROLE_ADMIN)
 					.build();
 

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class KakaoLoginDto {
     @JsonProperty("access_token")
     private String accessToken;
+    @JsonProperty("fcm_token")
     private String FCMToken;
     private String phone;
     private String name;

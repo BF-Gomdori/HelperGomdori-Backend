@@ -24,11 +24,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -116,11 +111,12 @@ public class KakaoUserService {
                     kakaoEmail,
                     encodedEmail,
                     kakaoUserInfoDto.getThumbnailImage(),
-                    kakaoUserInfoDto.getGender().equals("male") ? "남":"여",
+                    kakaoUserInfoDto.getGender().equals("male") ? "남" : "여",
                     kakaoLoginDto.getPhone(),
                     kakaoUserInfoDto.getAge(),
                     new Timestamp(System.currentTimeMillis()),
                     new Timestamp(System.currentTimeMillis()),
+                    kakaoLoginDto.getFCMToken(),
                     UserRole.ROLE_USER
             );
             userRepository.save(kakaoUser);

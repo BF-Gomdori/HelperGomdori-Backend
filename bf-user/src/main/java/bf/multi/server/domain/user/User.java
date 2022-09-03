@@ -70,7 +70,7 @@ public class User {
     public User(String name, String email, String password,
                 String photoLink, String gender, String phone,
                 String age, Timestamp startDate, Timestamp modifiedDate,
-                UserRole roleUser) {
+                String FCMToken, UserRole roleUser) {
         this.username = name;
         this.email = email;
         this.password = password;
@@ -80,6 +80,7 @@ public class User {
         this.age = age;
         this.startDate = startDate;
         this.modifiedDate = modifiedDate;
+        this.FCMToken = FCMToken;
         this.role = roleUser;
     }
 
