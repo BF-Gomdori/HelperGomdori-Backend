@@ -1,11 +1,15 @@
 package bf.multi.server.controller;
 
-import bf.multi.server.domain.dto.user.JwtTokenDto;
-import bf.multi.server.domain.helps.HelpsRepository;
-import bf.multi.server.domain.requests.RequestsRepository;
+import bf.multi.server.domain.dto.helpee.HelpeeRequestWriteDto;
 import bf.multi.server.domain.dto.websocket.HelpeePingDto;
 import bf.multi.server.domain.dto.websocket.HelperPingDto;
+import bf.multi.server.domain.dto.websocket.Location;
 import bf.multi.server.domain.dto.websocket.MatchingDataDto;
+import bf.multi.server.domain.helps.HelpsRepository;
+import bf.multi.server.domain.requests.RequestsRepository;
+import bf.multi.server.domain.user.User;
+import bf.multi.server.service.GeoService;
+import bf.multi.server.service.UserService;
 import bf.multi.server.service.websocket.GomdoriService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,9 +21,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,14 +37,16 @@ public class ApiController {
     private final HelpsRepository helpsRepository;
     private final RequestsRepository requestsRepository;
     private final GomdoriService gomdoriService;
+    private final UserService userService;
+    private final GeoService geoService;
 
     @Tag(name = "GET API 모음")
     @Operation(summary = "곰발바닥 눌렀을 때 DATA",
             description = "Header 설정(value 넣을 때 Beaer 다음에 띄어쓰기 한칸 중요!) : [Authorization]:[Bearer {기본 회원 가입 시 받은 JWT}]" +
-                          "\ntoken 줄 때 [곰발바닥] 핑에 있는 JWT를 줘야함")
+                    "\ntoken 줄 때 [곰발바닥] 핑에 있는 JWT를 줘야함")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Helper 핑 데이터 return", content = @Content(schema = @Schema(implementation = HelperPingDto.class))),
-            @ApiResponse(responseCode = "401", description = "JWT 만료 OR Authorization 설정 에러") })
+            @ApiResponse(responseCode = "401", description = "JWT 만료 OR Authorization 설정 에러")})
     @GetMapping("/helper/ping") // 베프의 핑을 눌렀을 때 보이는 정보
     public HelperPingDto getHelperPingInfo() {
         return gomdoriService.responseHelperPing();
@@ -93,14 +99,34 @@ public class ApiController {
                     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Helpee, Helper 위치 데이터 return", content = @Content(schema = @Schema(implementation = MatchingDataDto.class))),
-            @ApiResponse(responseCode = "401", description = "JWT 만료 OR Authorization,token 세팅 에러") })
+            @ApiResponse(responseCode = "401", description = "JWT 만료 OR Authorization,token 세팅 에러")})
     @GetMapping("/accept") // 도움 주기/받기 매칭 됐을 때
-    public MatchingDataDto matching(HttpServletRequest request){
+    public MatchingDataDto matching(HttpServletRequest request) {
         String firstBearerToken = request.getHeader("Authorization")
                 .substring(7, request.getHeader("Authorization").length());
         String secondBearerToken = request.getHeader("token")
                 .substring(7, request.getHeader("token").length());
         return gomdoriService.generateMatchingData(firstBearerToken, secondBearerToken);
     }
+
+    @Tag(name = "GET API 모음")
+    @Operation(summary = "요청서에 필요한 데이터 [프로필이미지, 이름, 현재 위치 변환 값",
+            description = "Header 설정(value 넣을 때 Beaer 다음에 띄어쓰기 한칸 중요!) : [Authorization]:[Bearer {기본 회원 가입 시 받은 JWT}]"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "HelpeeRequestWriteDto return", content = @Content(schema = @Schema(implementation = HelpeeRequestWriteDto.class))),
+            @ApiResponse(responseCode = "401", description = "JWT 만료 OR Authorization,token 세팅 에러")})
+    @PostMapping("/user/semi/info")
+    public HelpeeRequestWriteDto helpeeRequestWriteDto(@RequestBody Location location) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("username: " + userDetails.getUsername() + "password: " + userDetails.getPassword());
+        User user = userService.loadUserByEncodedEmail(userDetails.getPassword());
+        return HelpeeRequestWriteDto.builder()
+                .image(user.getPhotoLink())
+                .name(user.getUsername())
+                .location(geoService.reverseGeocoding(location.getY(), location.getX()))
+                .build();
+    }
+
 
 }
