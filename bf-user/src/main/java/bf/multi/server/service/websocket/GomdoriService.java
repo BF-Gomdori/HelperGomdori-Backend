@@ -66,6 +66,7 @@ public class GomdoriService {
             // 요청사항 저장 및 + 도움 요청 메세지 전송
             createRequests(messageDto); // request default 생성
             // 베:프 들에게 FCM 메세지 뿌리기
+            Optional<User> helpeeUser = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(messageDto.getHelpRequest().getHelpeeJwt()));
             List<Helps> helpsList = helpsRepository.findAllBySuccessIsFalse();
             List<User> userList = new ArrayList<>();
             helpsList.forEach(list -> {
@@ -75,10 +76,8 @@ public class GomdoriService {
                 try {
                     fcmService.sendMessageTo(
                             list.getFCMToken(),
-                            "[ " + list.getUsername() + " ] 님의 도움을 요청했습니다!!",
-                            "[ " + list.getUsername() + " ] 님의 현재 상황\n\n" +
-                                    "<요청사항> " + messageDto.getHelpRequest().getRequestType() + "\n" +
-                                    "<세부요청사항> " + messageDto.getHelpRequest().getRequestDetail());
+                            "[ " + helpeeUser.get().getUsername() + " ] 님이 도움을 요청했습니다!!",
+                            "<세부요청사항> " + messageDto.getHelpRequest().getRequestDetail());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -87,11 +86,12 @@ public class GomdoriService {
             simpMessageSendingOperations.convertAndSend("/map/" + messageDto.getSub(), messageDto);
         }else if(MessageDto.MessageType.ACCEPT.equals(messageDto.getType())) { // 도움 수락 할 때
             // FCM 메세지 로직
-            Optional<User> user = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(messageDto.getHelpRequest().getHelpeeJwt()));
+            Optional<User> helpeeUser = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(messageDto.getHelpRequest().getHelpeeJwt()));
+            Optional<User> helperUser = userRepository.findByUsername(jwtTokenProvider.getUsernameByToken(messageDto.getJwt()));
             fcmService.sendMessageTo(
-                    user.get().getFCMToken(),
-                    "[ " + user.get().getUsername() + " ] 님의 도움 요청이 수락되었습니다!!",
-                    "[ " + user.get().getUsername() + " ] 님이 도움 요청을 수락했어요");
+                    helpeeUser.get().getFCMToken(),
+                    "[ " + helpeeUser.get().getUsername() + " ] 님의 도움 요청이 수락되었습니다!!",
+                    "[ " + helperUser.get().getUsername() + " ] 님이 도움 요청을 수락했어요");
             // STOMP 메세지 로직
             List<MessageDto> messageDtoList = findConnectedUsersService.deleteAcceptPings(
                     messageDto.getJwt(),
