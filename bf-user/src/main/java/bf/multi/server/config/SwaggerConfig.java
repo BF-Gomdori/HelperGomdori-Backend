@@ -38,7 +38,7 @@ public class SwaggerConfig {
                 .securitySchemes(Arrays.asList(apiKey()))
 
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("bf.multi.server.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

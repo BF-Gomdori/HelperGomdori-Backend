@@ -13,7 +13,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"user","helpsList"})
 @Entity
 @Table(name = "HELPER")
 public class Helper {
@@ -39,8 +39,7 @@ public class Helper {
     @Column(name = "HEARTS", nullable = false)
     private Integer hearts;
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "helper")
+    @OneToMany(mappedBy = "helper", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Helps> helpsList = new ArrayList<>();
 
     @Builder

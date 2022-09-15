@@ -1,5 +1,6 @@
 package bf.multi.server.domain.requests;
 
+import bf.multi.server.domain.dto.websocket.MessageDto;
 import bf.multi.server.domain.helpee.Helpee;
 import bf.multi.server.domain.helps.Helps;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"helpee","helpsList"})
 @Entity
 @Table(name = "REQUESTS")
 public class Requests {
@@ -26,16 +27,30 @@ public class Requests {
     @Column(name = "ID")
     private Long id;
 
-    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "HELPEE_ID", nullable = false)
     private Helpee helpee;
 
-    @Column(name = "MSG", columnDefinition = "TEXT")
-    private String message;
+    @Column(name = "REQUESTS_JWT")
+    private String requestsJwt;
+
+    @Column(name = "COMPLETE", length = 1, nullable = false)
+    private boolean complete;
+
+    @Column(name = "HELP_REQUEST_TYPE", columnDefinition = "TEXT")
+    private String requestType;
+
+    @Column(name = "HELP_REQUEST_DETAIL", columnDefinition = "TEXT")
+    private String requestDetail;
 
     @Column(name = "LOCATION", length = 45)
     private String location;
+
+    @Column(name = "X")
+    private Double x;
+
+    @Column(name = "Y")
+    private Double y;
 
     @Column(name = "REQUEST_TIME", columnDefinition = "TIMESTAMP")
     private Timestamp requestTime;
@@ -45,15 +60,26 @@ public class Requests {
         helpee.getRequestsList().add(this);
     }
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "requests")
+    @OneToMany(mappedBy = "requests", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Helps> helpsList = new ArrayList<>();
 
     @Builder
-    public Requests(Helpee helpee, String message, String location, Timestamp requestTime) {
+    public Requests(Helpee helpee, boolean complete, String requestsJwt,
+                    String requestType, String requestDetail,
+                    String location, Double x, Double y,
+                    Timestamp requestTime) {
         this.helpee = helpee;
-        this.message = message;
+        this.complete = complete;
+        this.requestsJwt = requestsJwt;
+        this.requestType = requestType;
+        this.requestDetail = requestDetail;
         this.location = location;
+        this.x = x;
+        this.y = y;
         this.requestTime = requestTime;
+    }
+
+    public void updateRequests(MessageDto messageDto){
+        this.complete = true;
     }
 }

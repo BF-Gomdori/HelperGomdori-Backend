@@ -24,11 +24,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -94,10 +89,11 @@ public class KakaoUserService {
         Long id = jsonNode.get("id").asLong();
         String email = jsonNode.get("kakao_account").get("email").asText();
         String nickname = jsonNode.get("properties").get("nickname").asText();
+        String age = jsonNode.get("kakao_account").get("age_range").asText();
         String gender = jsonNode.get("kakao_account").get("gender").asText();
         String thumbnailImage = jsonNode.get("properties").get("thumbnail_image").asText();
 
-        return new KakaoUserInfoDto(id, email, nickname, gender, thumbnailImage);
+        return new KakaoUserInfoDto(id, email, nickname, age, gender, thumbnailImage);
     }
 
     // 2. 카카오EMAIL로 회원가입 처리
@@ -115,12 +111,12 @@ public class KakaoUserService {
                     kakaoEmail,
                     encodedEmail,
                     kakaoUserInfoDto.getThumbnailImage(),
-                    kakaoUserInfoDto.getGender(),
+                    kakaoUserInfoDto.getGender().equals("male") ? "남" : "여",
                     kakaoLoginDto.getPhone(),
-                    kakaoLoginDto.getAge(),
-                    kakaoLoginDto.getIntro(),
+                    kakaoUserInfoDto.getAge(),
                     new Timestamp(System.currentTimeMillis()),
                     new Timestamp(System.currentTimeMillis()),
+                    kakaoLoginDto.getFCMToken(),
                     UserRole.ROLE_USER
             );
             userRepository.save(kakaoUser);
